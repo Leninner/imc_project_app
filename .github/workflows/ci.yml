@@ -10,8 +10,8 @@ env:
   APP_CENTER_STAGIN: leninner/IMC-app
 
 jobs:
-  ci:
-    name: Build
+  test:
+    name: Test
     runs-on: DOCKER_IMAGE
 
     steps:
@@ -24,6 +24,7 @@ jobs:
 
   build_android:
     name: Build Android
+    needs: test
     runs-on: DOCKER_IMAGE
 
     steps:
