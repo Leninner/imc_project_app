@@ -23,11 +23,12 @@ jobs:
 
       - name: Checkout gallery code
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - run: flutter pub get
+      - run: |
+          flutter pub get 
           flutter build apk --debug
 
       - name: Deploy to AppCenter
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a $APP_CENTER_STAGING
+          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a $APP_CENTER_STAGING --debug
