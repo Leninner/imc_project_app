@@ -1,24 +1,16 @@
 name: Deploy to Play Store
 on:
-  workflow_dispatch:
-    inputs:
-      lane:
-        description: "Fastlane lane"
-        required: true
-        default: "beta"
-        type: choice
-        options:
-          - beta
-          - promote_to_production
-          - production
+  push:
+    branches:
+      - main
 
 permissions: read-all
 
 jobs:
-  fastlane-deploy:
+  appcenter-deploy:
     runs-on: ubuntu-latest
+    
     steps:
-      # Set up Flutter.
       - name: Clone Flutter repository with master channel
         uses: subosito/flutter-action@48cafc24713cca54bbe03cdc3a423187d413aafa
         with:
