@@ -12,6 +12,7 @@ jobs:
 
     env:
       APP_CENTER_STAGING: leninner/IMC-app
+      APP_CENTER_GROUP: imc
     
     steps:
       - name: Clone Flutter repository with master channel
@@ -31,4 +32,4 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a leninner/IMC-app --debug
+          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -g imc -a leninner/IMC-app --debug
