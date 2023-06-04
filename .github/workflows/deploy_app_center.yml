@@ -31,4 +31,4 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a $APP_CENTER_STAGING --debug
+          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a leninner/IMC-app --debug
