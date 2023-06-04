@@ -2,6 +2,8 @@ name: Tests
 on:
   pull_request:
     branches: [main, develop]
+  push:
+    branches: develop
 
 permissions: read-all
 
