@@ -1,4 +1,4 @@
-name: Deploy to Play Store
+name: Deploy to App Center
 on:
   push:
     branches:
@@ -9,6 +9,9 @@ permissions: read-all
 jobs:
   appcenter-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      APP_CENTER_STAGING: leninner/IMC-app
     
     steps:
       - name: Clone Flutter repository with master channel
@@ -20,13 +23,11 @@ jobs:
 
       - name: Checkout gallery code
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - run: |
-          flutter packages get
-          flutter clean
+      - run: flutter pub get
           flutter build apk --debug
 
       - name: Deploy to AppCenter
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk
+          command: appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -a $APP_CENTER_STAGING
