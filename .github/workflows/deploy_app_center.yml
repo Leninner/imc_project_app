@@ -23,7 +23,7 @@ jobs:
       - run: flutter pub get
 
       # Prepare appcenter
-      - name: Prepare appcenter
+      - name: Deploy to appcenter
         run: |
           touch ~/.bashrc && chmod +x ~/.bashrc
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
@@ -31,10 +31,6 @@ jobs:
           npm install --location=global appcenter-cli
           flutter packages get
           flutter clean
-
-      - name: Deploy to appcenter
-        run: |
           flutter build apk --debug
           appcenter login --token $APPCENTER_API_TOKEN
           appcenter distribute release -f build/app/outputs/apk/release/app-release.apk
-    
