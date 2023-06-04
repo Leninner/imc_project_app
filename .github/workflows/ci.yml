@@ -1,0 +1,48 @@
+name: Continuous Integration for IMC project
+run-name: Currently running ${{ github.workflow }}
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DOCKER_IMAGE: instrumentisto/flutter:3.10.1
+  APP_CENTER_STAGIN: leninner/IMC-app
+
+jobs:
+  ci:
+    name: Build
+    runs-on: DOCKER_IMAGE
+
+    steps:
+      - name: Get packages
+        run: dart pub get
+      - name: Run test artifacts
+        run: dart run build_runner build --delete-conflicting-outputs
+      - name: Test app
+        run: flutter test ./lib
+
+  build_android:
+    name: Build Android
+    runs-on: DOCKER_IMAGE
+
+    steps:
+      - name: Before script
+        run: flutter packages get
+      - name: Clean build
+        run: flutter clean
+      - name: Build Android
+        run: flutter build apk
+      - name: Prepare deploy to AppCenter
+        run: |
+          touch ~/.bashrc && chmod +x ~/.bashrc
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+          . ~/.nvm/nvm.sh && source ~/.bashrc && nvm install node
+          npm install --location=global appcenter-cli
+          flutter packages get
+          flutter clean
+      - name: Deploy to AppCenter
+        run: |
+          flutter build apk
+          appcenter login --token ${{ secrets.APPCENTER_API_TOKEN }}
+          appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -g Collaborators -a $APP_CENTER_STAGIN
