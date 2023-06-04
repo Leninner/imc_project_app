@@ -1,0 +1,48 @@
+name: Deploy to Play Store
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "Fastlane lane"
+        required: true
+        default: "beta"
+        type: choice
+        options:
+          - beta
+          - promote_to_production
+          - production
+
+permissions: read-all
+
+jobs:
+  fastlane-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Set up Flutter.
+      - name: Clone Flutter repository with master channel
+        uses: subosito/flutter-action@48cafc24713cca54bbe03cdc3a423187d413aafa
+        with:
+          channel: master
+      - run: flutter doctor -v
+
+      # Checkout gallery code and get packages.
+      - name: Checkout gallery code
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - run: flutter pub get
+
+      # Prepare appcenter
+      - name: Prepare appcenter
+        run: |
+          touch ~/.bashrc && chmod +x ~/.bashrc
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+          . ~/.nvm/nvm.sh && source ~/.bashrc && nvm install node
+          npm install --location=global appcenter-cli
+          flutter packages get
+          flutter clean
+
+      - name: Deploy to appcenter
+        run: |
+          flutter build apk --debug
+          appcenter login --token $APPCENTER_API_TOKEN
+          appcenter distribute release -f build/app/outputs/apk/release/app-release.apk
+    
