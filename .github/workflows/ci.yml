@@ -7,12 +7,12 @@ on:
 
 env:
   DOCKER_IMAGE: instrumentisto/flutter:3.10.1
-  APP_CENTER_STAGIN: leninner/IMC-app
+  APP_CENTER_STAGING: leninner/IMC-app
 
 jobs:
   test:
     name: Test
-    runs-on: DOCKER_IMAGE
+    runs-on: $DOCKER_IMAGE
 
     steps:
       - name: Get packages
@@ -25,7 +25,7 @@ jobs:
   build_android:
     name: Build Android
     needs: test
-    runs-on: DOCKER_IMAGE
+    runs-on: $DOCKER_IMAGE
 
     steps:
       - name: Before script
@@ -40,10 +40,7 @@ jobs:
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
           . ~/.nvm/nvm.sh && source ~/.bashrc && nvm install node
           npm install --location=global appcenter-cli
-          flutter packages get
-          flutter clean
       - name: Deploy to AppCenter
         run: |
-          flutter build apk
           appcenter login --token ${{ secrets.APPCENTER_API_TOKEN }}
-          appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -g Collaborators -a $APP_CENTER_STAGIN
+          appcenter distribute release -f build/app/outputs/apk/release/app-release.apk -g Collaborators -a $APP_CENTER_STAGING
