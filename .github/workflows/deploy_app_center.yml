@@ -9,11 +9,6 @@ permissions: read-all
 jobs:
   appcenter-deploy:
     runs-on: ubuntu-latest
-
-    env:
-      APP_CENTER_STAGING: leninner/IMC-app
-      APP_CENTER_GROUP: imc
-    
     steps:
       - name: Clone Flutter repository with master channel
         uses: subosito/flutter-action@48cafc24713cca54bbe03cdc3a423187d413aafa
@@ -32,4 +27,4 @@ jobs:
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/flutter-apk/app-release.apk --group $APP_CENTER_GROUP -a $APP_CENTER_STAGING
+          command: appcenter distribute release -f build/app/outputs/flutter-apk/app-release.apk --group imc -a leninner/IMC-app
