@@ -26,10 +26,10 @@ jobs:
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - run: |
           flutter pub get 
-          flutter build apk --debug
+          flutter build apk
 
       - name: Deploy to AppCenter
         uses: avocaddo/AppCenter-Github-Action@v1.0.2
         with:
           token: ${{ secrets.APPCENTER_API_TOKEN }}
-          command: appcenter distribute release -f build/app/outputs/apk/debug/app-debug.apk -g imc -a leninner/IMC-app --debug
+          command: appcenter distribute release -f build/app/outputs/flutter-apk/app-release.apk --group $APP_CENTER_GROUP -a $APP_CENTER_STAGING

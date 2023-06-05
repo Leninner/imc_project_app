@@ -1,4 +1,4 @@
-name: Tests
+name: IMC Flutter CI Testing
 on:
   pull_request:
     branches: [main, develop]
@@ -23,10 +23,12 @@ jobs:
 
       - name: Checkout gallery code
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - run: flutter pub get
-
-      - run: flutter analyze
+      - run: |
+          flutter pub get
+          flutter analyze
+      
       - name: Ensure the Dart code is formatted correctly
         run: dart format --set-exit-if-changed .
+      
       - name: Run Flutter unit tests
         run: flutter test
