@@ -24,6 +24,11 @@ jobs:
       - name: Checkout gallery code
         uses: actions/checkout@v3
       - run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+
+          cat .env
+
           echo "{\"SUPABASE_URL\":\"${{ env.SUPABASE_URL }}\", \"SUPABASE_ANON_KEY\":\"${{ env.SUPABASE_ANON_KEY }}\"}" > env.json
           
           echo "Environment variables:"
