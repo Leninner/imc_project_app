@@ -19,13 +19,16 @@ jobs:
 
       - name: Checkout gallery code
         uses: actions/checkout@v3
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       - run: |
-          echo "${{ secrets.SUPABASE_URL }}"
-          echo "${{ secrets.SUPABASE_ANON_KEY }}"
+          echo "$SUPABASE_URL"
+          echo "$SUPABASE_ANON_KEY"
 
           echo "Creating env.json file..."
 
-          echo "{\"SUPABASE_URL\":\"${{ secrets.SUPABASE_URL }}\", \"SUPABASE_ANON_KEY\":\"${{ secrets.SUPABASE_ANON_KEY }}\"}" > env.json
+          echo "{\"SUPABASE_URL\":\"$SUPABASE_URL\", \"SUPABASE_ANON_KEY\":\"$SUPABASE_ANON_KEY\"}" > env.json
           
           echo "Environment variables:"
           cat env.json
