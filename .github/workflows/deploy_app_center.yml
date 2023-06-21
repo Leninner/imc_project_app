@@ -19,10 +19,11 @@ jobs:
 
       - name: Checkout gallery code
         uses: actions/checkout@v3
+      - shell: bash  
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-      - run: |
+        run: |
           echo "$SUPABASE_URL"
           echo "$SUPABASE_ANON_KEY"
 
