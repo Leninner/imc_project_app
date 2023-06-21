@@ -94,8 +94,8 @@ ThemeData theme = ThemeData(
     ),
   ),
   colorScheme: ColorScheme.fromSeed(
-    seedColor: ColorSchemeApp.primary,
-    primary: ColorSchemeApp.primary,
+    seedColor: const Color.fromARGB(255, 72, 16, 112),
+    primary: const Color.fromARGB(255, 78, 33, 126),
     secondary: ColorSchemeApp.secondary,
     error: ColorSchemeApp.danger,
   ),
