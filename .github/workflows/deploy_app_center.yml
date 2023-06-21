@@ -25,6 +25,12 @@ jobs:
         uses: actions/checkout@v3
       - run: |
           echo "{\"SUPABASE_URL\":\"${SUPABASE_URL}\", \"SUPABASE_ANON_KEY\":\"${SUPABASE_ANON_KEY}\"}" > env.json
+          
+          echo "Environment variables:"
+          cat env.json
+          
+          echo "Building APK..."
+
           flutter pub get 
           flutter build apk --dart-define-from-file=env.json --no-tree-shake-icons
 
