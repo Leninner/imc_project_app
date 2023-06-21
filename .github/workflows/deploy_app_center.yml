@@ -24,11 +24,11 @@ jobs:
       - name: Checkout gallery code
         uses: actions/checkout@v3
       - run: |
-          echo "{\"SUPABASE_URL\":\"${SUPABASE_URL}\", \"SUPABASE_ANON_KEY\":\"${SUPABASE_ANON_KEY}\"}" > env.json
+          echo "{\"SUPABASE_URL\":\"${{ env.SUPABASE_URL }}\", \"SUPABASE_ANON_KEY\":\"${{ env.SUPABASE_ANON_KEY }}\"}" > env.json
           
           echo "Environment variables:"
           cat env.json
-          
+
           echo "Building APK..."
 
           flutter pub get 
