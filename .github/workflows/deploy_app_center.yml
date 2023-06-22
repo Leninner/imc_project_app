@@ -24,11 +24,7 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          echo "$SUPABASE_URL"
-          echo "$SUPABASE_ANON_KEY"
-
           echo "Creating env.json file..."
-
           echo "{\"SUPABASE_URL\":\"$SUPABASE_URL\", \"SUPABASE_ANON_KEY\":\"$SUPABASE_ANON_KEY\"}" > env.json
           
           echo "Environment variables:"
