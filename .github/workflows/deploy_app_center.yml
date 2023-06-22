@@ -17,13 +17,18 @@ jobs:
           channel: 'stable'
       - run: flutter doctor -v
 
-      - name: Checkout gallery code
+      - name: Create .env file
         uses: actions/checkout@v3
       - shell: bash  
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |          
+        run: |        
+          echo "SUPABASE_URL=$SUPABASE_URL" >> .env
+          echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env
+
+          cat .env
+          
           echo "Building APK..."
           flutter pub get 
           flutter build apk
