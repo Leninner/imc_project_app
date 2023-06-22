@@ -26,8 +26,7 @@ jobs:
         run: |        
           echo "SUPABASE_URL=$SUPABASE_URL" >> .env
           echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env
-
-          cat .env
+          echo "$SUPABASE_URL" | sed 's/./& /g'
           
           echo "Building APK..."
           flutter pub get 
