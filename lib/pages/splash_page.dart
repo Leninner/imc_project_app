@@ -18,18 +18,19 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _redirect() async {
-    await Future.delayed(const Duration(seconds: 3));
-    if (!mounted) {
-      return;
-    }
-
     final session = supabase.auth.currentSession;
 
-    if (session != null) {
-      Navigator.of(context).pushReplacementNamed(Routes.home);
-    } else {
-      Navigator.of(context).pushReplacementNamed(Routes.login);
-    }
+    await Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) {
+        return;
+      }
+
+      if (session != null) {
+        Navigator.of(context).popAndPushNamed(Routes.home);
+      } else {
+        Navigator.of(context).popAndPushNamed(Routes.login);
+      }
+    });
   }
 
   @override
