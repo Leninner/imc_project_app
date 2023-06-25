@@ -30,7 +30,7 @@ class MainApp extends StatelessWidget {
       builder: Breakpoints,
       title: 'IMC Project App',
       theme: theme,
-      initialRoute: Routes.register,
+      initialRoute: Routes.splash,
       routes: AppRoutes(context),
       navigatorKey: NavigationService.navigatorKey,
     );

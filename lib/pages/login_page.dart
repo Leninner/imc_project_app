@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
-import 'package:imc_project_app/pages/register_page.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/input_field.dart';
 import 'package:imc_project_app/widgets/main_title_widget.dart';
@@ -19,7 +18,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-  bool _redirecting = false;
   late final TextEditingController _emailController = TextEditingController();
   late final TextEditingController _passwordController =
       TextEditingController();
@@ -31,26 +29,39 @@ class _LoginPageState extends State<LoginPage> {
         _isLoading = true;
       });
 
-      print(_emailController.text.trim());
-      print(_passwordController.text.trim());
+      await supabase.auth
+          .signInWithPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      )
+          .then(
+        (value) {
+          const SnackBar snackBar = SnackBar(
+            content: Text('Bienvenido'),
+            backgroundColor: Colors.green,
+          );
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signing in...')),
-        );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-        _emailController.clear();
-        _passwordController.clear();
-      }
-    } on AuthException catch (error) {
-      SnackBar(
-        content: Text(error.message),
+          _emailController.clear();
+          _passwordController.clear();
+
+          Navigator.of(context).pushReplacementNamed(Routes.home);
+        },
+      );
+    } on AuthException catch (_) {
+      final SnackBar snackBar = SnackBar(
+        content: const Text('Credenciales incorrectas'),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } catch (error) {
-      SnackBar(
-        content: const Text('Unexpected error occurred'),
-        backgroundColor: Theme.of(context).colorScheme.error,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Unexpected error occurred'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
       );
     } finally {
       if (mounted) {
@@ -64,14 +75,16 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
+      print('Auth event: ${data.toString()}');
 
-      final session = data.session;
+      print('hi thereeee');
 
-      if (session != null) {
-        _redirecting = true;
-        Navigator.of(context).pushReplacementNamed('/account');
-      }
+      // final session = data.session;
+
+      // if (session != null) {
+      //   _redirecting = true;
+      //   Navigator.of(context).pushReplacementNamed('/account');
+      // }
     });
 
     super.initState();
@@ -86,8 +99,13 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      appBar: null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -120,7 +138,10 @@ class _LoginPageState extends State<LoginPage> {
             controller: _emailController,
           ),
           const SizedBox(height: 18),
-          InputField(label: 'Contraseña *', controller: _passwordController),
+          InputField(
+            label: 'Contraseña *',
+            controller: _passwordController,
+          ),
           const SizedBox(height: 18),
           ButtonWidget(onPressed: _signIn, label: 'Iniciar Sesión'),
           TextButton(
