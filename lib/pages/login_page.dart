@@ -75,10 +75,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      print('Auth event: ${data.toString()}');
-
-      print('hi thereeee');
-
       // final session = data.session;
 
       // if (session != null) {
