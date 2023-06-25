@@ -1,15 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
+import 'package:imc_project_app/pages/register_page.dart';
+import 'package:imc_project_app/widgets/input_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_svg/svg.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -17,6 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _redirecting = false;
   late final TextEditingController _emailController = TextEditingController();
+  late final TextEditingController _passwordController =
+      TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
 
   Future<void> _signIn() async {
@@ -24,16 +28,17 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = true;
       });
-      await supabase.auth.signInWithOtp(
-        email: _emailController.text.trim(),
-        emailRedirectTo:
-            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback/',
-      );
+
+      print(_emailController.text.trim());
+      print(_passwordController.text.trim());
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Check your email for a login link!')),
+          const SnackBar(content: Text('Signing in...')),
         );
+
         _emailController.clear();
+        _passwordController.clear();
       }
     } on AuthException catch (error) {
       SnackBar(
@@ -58,12 +63,15 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
       if (_redirecting) return;
+
       final session = data.session;
+
       if (session != null) {
         _redirecting = true;
         Navigator.of(context).pushReplacementNamed('/account');
       }
     });
+
     super.initState();
   }
 
@@ -77,20 +85,57 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+      appBar: null,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SafeArea(
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: SvgPicture.asset('assets/images/login_image.svg'),
+              ),
+              const Text(
+                'Crear cuenta',
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(height: 18),
+              buildLoginForm(),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Form buildLoginForm() {
+    return Form(
+      child: Column(
         children: [
-          const Text('Sign in via the magic link with your email below'),
           const SizedBox(height: 18),
-          TextFormField(
+          InputField(
+            label: 'Correo Electrónico *',
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
           ),
           const SizedBox(height: 18),
-          ElevatedButton(
-            onPressed: _isLoading ? null : _signIn,
-            child: Text(_isLoading ? 'Loading' : 'Send Magic Link'),
+          InputField(label: 'Contraseña *', controller: _passwordController),
+          const SizedBox(height: 18),
+          ButtonWidget(onPressed: _signIn, label: 'Iniciar Sesión'),
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: const TextStyle(
+                fontSize: 16,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed(Routes.register);
+            },
+            child: const Text('¿No tienes cuenta? Regístrate'),
           ),
         ],
       ),

@@ -3,7 +3,7 @@ import 'package:imc_project_app/constants/styles/color_scheme.dart';
 import 'package:imc_project_app/constants/styles/styles.dart';
 
 ThemeData theme = ThemeData(
-  scaffoldBackgroundColor: ColorSchemeApp.gray.shade50,
+  scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
   fontFamily: StyleConstants.primaryFont,
   textTheme: const TextTheme(
     displayLarge: TextStyle(
@@ -96,7 +96,7 @@ ThemeData theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(255, 72, 16, 112),
     primary: const Color.fromARGB(255, 78, 33, 126),
-    secondary: ColorSchemeApp.secondary,
+    secondary: const Color.fromARGB(255, 255, 255, 255),
     error: ColorSchemeApp.danger,
   ),
 );
