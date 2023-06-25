@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
 
@@ -17,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _redirect() async {
-    await Future.delayed(Duration.zero);
+    await Future.delayed(const Duration(seconds: 3));
     if (!mounted) {
       return;
     }
@@ -25,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     final session = supabase.auth.currentSession;
 
     if (session != null) {
-      Navigator.of(context).pushReplacementNamed(Routes.account);
+      Navigator.of(context).pushReplacementNamed(Routes.home);
     } else {
       Navigator.of(context).pushReplacementNamed(Routes.login);
     }
@@ -33,8 +34,19 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: SvgPicture.asset('assets/images/splash.svg'),
+            ),
+            const CircularProgressIndicator(),
+          ],
+        ),
+      ),
     );
   }
 }

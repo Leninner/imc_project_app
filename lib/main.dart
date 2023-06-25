@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/constants/breakpoints.dart';
-import 'package:imc_project_app/constants/environments.dart';
 import 'package:imc_project_app/constants/navigation_service.dart';
 import 'package:imc_project_app/constants/styles/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
+  await dotenv.load(fileName: ".env");
+
   await Supabase.initialize(
-    url: SUPABASE_URL,
-    anonKey: SUPABASE_ANON_KEY,
+    url: dotenv.get('SUPABASE_URL'),
+    anonKey: dotenv.get('SUPABASE_ANON_KEY'),
     authFlowType: AuthFlowType.pkce,
   );
 
@@ -28,7 +30,7 @@ class MainApp extends StatelessWidget {
       builder: Breakpoints,
       title: 'IMC Project App',
       theme: theme,
-      initialRoute: Routes.home,
+      initialRoute: Routes.splash,
       routes: AppRoutes(context),
       navigatorKey: NavigationService.navigatorKey,
     );
