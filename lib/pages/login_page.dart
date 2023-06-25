@@ -1,22 +1,26 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
+import 'package:imc_project_app/widgets/button_widget.dart';
+import 'package:imc_project_app/widgets/input_field.dart';
+import 'package:imc_project_app/widgets/main_title_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_svg/svg.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-  bool _redirecting = false;
   late final TextEditingController _emailController = TextEditingController();
+  late final TextEditingController _passwordController =
+      TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
 
   Future<void> _signIn() async {
@@ -24,26 +28,40 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isLoading = true;
       });
-      await supabase.auth.signInWithOtp(
+
+      await supabase.auth
+          .signInWithPassword(
         email: _emailController.text.trim(),
-        emailRedirectTo:
-            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback/',
+        password: _passwordController.text.trim(),
+      )
+          .then(
+        (value) {
+          const SnackBar snackBar = SnackBar(
+            content: Text('Bienvenido'),
+            backgroundColor: Colors.green,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+          _emailController.clear();
+          _passwordController.clear();
+
+          Navigator.of(context).pushReplacementNamed(Routes.home);
+        },
       );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Check your email for a login link!')),
-        );
-        _emailController.clear();
-      }
-    } on AuthException catch (error) {
-      SnackBar(
-        content: Text(error.message),
+    } on AuthException catch (_) {
+      final SnackBar snackBar = SnackBar(
+        content: const Text('Credenciales incorrectas'),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } catch (error) {
-      SnackBar(
-        content: const Text('Unexpected error occurred'),
-        backgroundColor: Theme.of(context).colorScheme.error,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Unexpected error occurred'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
       );
     } finally {
       if (mounted) {
@@ -57,13 +75,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     _authStateSubscription = supabase.auth.onAuthStateChange.listen((data) {
-      if (_redirecting) return;
-      final session = data.session;
-      if (session != null) {
-        _redirecting = true;
-        Navigator.of(context).pushReplacementNamed('/account');
-      }
+      // final session = data.session;
+
+      // if (session != null) {
+      //   _redirecting = true;
+      //   Navigator.of(context).pushReplacementNamed('/account');
+      // }
     });
+
     super.initState();
   }
 
@@ -76,21 +95,63 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SafeArea(
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
+                child: SvgPicture.asset('assets/images/login_image.svg'),
+              ),
+              const MainTitleWidget(
+                label: 'Inicias Sesión',
+                verticalPadding: 10,
+              ),
+              const SizedBox(height: 18),
+              buildLoginForm(),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Form buildLoginForm() {
+    return Form(
+      child: Column(
         children: [
-          const Text('Sign in via the magic link with your email below'),
           const SizedBox(height: 18),
-          TextFormField(
+          InputField(
+            label: 'Correo Electrónico *',
             controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
           ),
           const SizedBox(height: 18),
-          ElevatedButton(
-            onPressed: _isLoading ? null : _signIn,
-            child: Text(_isLoading ? 'Loading' : 'Send Magic Link'),
+          InputField(
+            label: 'Contraseña *',
+            controller: _passwordController,
+          ),
+          const SizedBox(height: 18),
+          ButtonWidget(onPressed: _signIn, label: 'Iniciar Sesión'),
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: const TextStyle(
+                fontSize: 16,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed(Routes.register);
+            },
+            child: const Text('¿No tienes cuenta? Regístrate'),
           ),
         ],
       ),
