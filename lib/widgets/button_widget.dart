@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
   final Function() onPressed;
+  final String label;
 
   const ButtonWidget({
     super.key,
     required this.onPressed,
+    required this.label,
   });
 
   @override
@@ -25,7 +27,7 @@ class ButtonWidget extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        child: const Text('Crear Cuenta'),
+        child: Text(label),
       ),
     );
   }

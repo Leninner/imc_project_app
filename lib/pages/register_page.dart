@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
+import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/input_field.dart';
+import 'package:imc_project_app/widgets/main_title_widget.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,11 +20,24 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  void clearFields() {
+    _nameController.clear();
+    _lastNameController.clear();
+    _birthDateController.clear();
+    _genderController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+  }
 
   Future<void> _handleSignUp() async {
     formKey.currentState?.validate();
+    setState(() {
+      _isLoading = true;
+    });
 
-    final result = await supabase.auth.signUp(
+    await supabase.auth.signUp(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
       data: {
@@ -33,14 +48,47 @@ class RegisterPageState extends State<RegisterPage> {
         'email': _emailController.text.trim(),
         'password': _passwordController.text.trim(),
       },
-    );
+    ).then((result) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Inicia sesión con tu nueva cuenta',
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
 
-    print(result.session);
-    print(result.user);
+      clearFields();
+      Navigator.of(context).pushReplacementNamed(Routes.login);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.toString().contains('400')
+                ? 'El correo ya está registrado'
+                : 'Error desconocido, intenta de nuevo',
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        appBar: null,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: null,
       body: SingleChildScrollView(
@@ -49,16 +97,7 @@ class RegisterPageState extends State<RegisterPage> {
           child: SafeArea(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 36),
-                  child: Text(
-                    'Crear cuenta',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
+                const MainTitleWidget(label: 'Crear Cuenta'),
                 buildRegisterForm(context),
               ],
             ),
@@ -145,7 +184,11 @@ class RegisterPageState extends State<RegisterPage> {
             },
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
-              // TODO add the validator here
+              if (value == null) {
+                return 'Selecciona una opción';
+              }
+
+              return null;
             },
           ),
           const SizedBox(height: 18),
@@ -190,39 +233,6 @@ class RegisterPageState extends State<RegisterPage> {
             child: const Text('¿Ya tienes una cuenta? Inicia sesión'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ButtonWidget extends StatelessWidget {
-  final Function() onPressed;
-  final String label;
-
-  const ButtonWidget({
-    super.key,
-    required this.onPressed,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromRGBO(44, 43, 71, 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        onPressed: onPressed,
-        child: Text(label),
       ),
     );
   }

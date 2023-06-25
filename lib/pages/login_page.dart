@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/pages/register_page.dart';
+import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/input_field.dart';
+import 'package:imc_project_app/widgets/main_title_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -95,12 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: SvgPicture.asset('assets/images/login_image.svg'),
               ),
-              const Text(
-                'Crear cuenta',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w400,
-                ),
+              const MainTitleWidget(
+                label: 'Inicias Sesión',
+                verticalPadding: 10,
               ),
               const SizedBox(height: 18),
               buildLoginForm(),
