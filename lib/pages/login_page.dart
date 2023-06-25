@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
           _emailController.clear();
           _passwordController.clear();
 
-          Navigator.of(context).pushReplacementNamed(Routes.home);
+          Navigator.of(context).popAndPushNamed(Routes.home);
         },
       );
     } on AuthException catch (_) {

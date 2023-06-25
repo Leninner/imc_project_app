@@ -228,7 +228,7 @@ class RegisterPageState extends State<RegisterPage> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).pushNamed(Routes.login);
+              Navigator.of(context).pushReplacementNamed(Routes.login);
             },
             child: const Text('¿Ya tienes una cuenta? Inicia sesión'),
           ),
