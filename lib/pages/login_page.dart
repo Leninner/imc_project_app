@@ -22,9 +22,21 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _passwordController =
       TextEditingController();
   late final StreamSubscription<AuthState> _authStateSubscription;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  Future<void> _signIn() async {
+  Future<void> _handleSignIn() async {
     try {
+      if (!formKey.currentState!.validate()) {
+        const SnackBar snackBar = SnackBar(
+          content: Text('Por favor, corrige los errores'),
+          backgroundColor: Colors.red,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        return;
+      }
+
       setState(() {
         _isLoading = true;
       });
@@ -59,7 +71,9 @@ class _LoginPageState extends State<LoginPage> {
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Unexpected error occurred'),
+          content: const Text(
+            'Error desconocido, por favor, inténtalo de nuevo',
+          ),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -126,20 +140,37 @@ class _LoginPageState extends State<LoginPage> {
 
   Form buildLoginForm() {
     return Form(
+      key: formKey,
       child: Column(
         children: [
           const SizedBox(height: 18),
           InputField(
-            label: 'Correo Electrónico *',
+            label: 'Correo electrónico *',
+            type: TextInputType.emailAddress,
             controller: _emailController,
+            validator: () {
+              final RegExp emailRegexp = RegExp(
+                r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+(\.[a-zA-Z]+)?$',
+              );
+
+              if (!emailRegexp.hasMatch(_emailController.text)) {
+                return 'El correo electrónico no es válido';
+              }
+            },
           ),
           const SizedBox(height: 18),
           InputField(
             label: 'Contraseña *',
+            type: TextInputType.visiblePassword,
             controller: _passwordController,
+            validator: () {
+              if (_passwordController.text.length < 6) {
+                return 'Debe contener al menos 6 caractéres';
+              }
+            },
           ),
           const SizedBox(height: 18),
-          ButtonWidget(onPressed: _signIn, label: 'Iniciar Sesión'),
+          ButtonWidget(onPressed: _handleSignIn, label: 'Iniciar Sesión'),
           TextButton(
             style: TextButton.styleFrom(
               textStyle: const TextStyle(
