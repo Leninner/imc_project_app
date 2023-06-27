@@ -32,7 +32,19 @@ class RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _handleSignUp() async {
-    formKey.currentState?.validate();
+    if (!formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Por favor, corrige los errores',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -66,7 +78,7 @@ class RegisterPageState extends State<RegisterPage> {
           content: Text(
             error.toString().contains('400')
                 ? 'El correo ya está registrado'
-                : 'Error desconocido, intenta de nuevo',
+                : 'Existe un error, intenta de nuevo',
           ),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
@@ -117,7 +129,8 @@ class RegisterPageState extends State<RegisterPage> {
             label: 'Nombre *',
             controller: _nameController,
             validator: () {
-              final RegExp onlyLettersRegexp = RegExp(r'^[a-zA-Z\s]+$');
+              final RegExp onlyLettersRegexp =
+                  RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$');
 
               if (!onlyLettersRegexp.hasMatch(_nameController.text)) {
                 return 'El nombre solo puede contener letras';
@@ -129,7 +142,9 @@ class RegisterPageState extends State<RegisterPage> {
             label: 'Apellido *',
             controller: _lastNameController,
             validator: () {
-              final RegExp onlyLettersRegexp = RegExp(r'^[a-zA-Z\s]+$');
+              final RegExp onlyLettersRegexp =
+                  RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$');
+
               if (!onlyLettersRegexp.hasMatch(_lastNameController.text)) {
                 return 'El apellido solo puede contener letras';
               }
