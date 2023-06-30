@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_routes.dart';
 import '../main.dart';
+import '../widgets/custom_appbar.dart';
 
 class ImcPage extends StatefulWidget {
   const ImcPage({Key? key}) : super(key: key);
@@ -66,18 +67,7 @@ class _ImcPageState extends State<ImcPage> {
         backgroundColor: Colors.purple[800],
         child: const Icon(Icons.arrow_back),
       ),
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Calculadora de IMC',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Roboto',
-              fontSize: 22.0,
-            ),
-          ),
-        ),
-      ),
+      appBar:  const CustomAppBar(titleText: 'Reporte IMC'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),

@@ -7,8 +7,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> GetPage() async {
+    Future<void> GetImcPage() async {
       Navigator.of(context).pushReplacementNamed(Routes.imc);
+    }
+    Future<void> GetImcReportPage() async {
+      Navigator.of(context).pushReplacementNamed(Routes.imcReport);
     }
 
     return Scaffold(
@@ -17,8 +20,12 @@ class HomePage extends StatelessWidget {
           children: [
             const Text('Home Page'),
             ElevatedButton(
-              onPressed: GetPage,
-              child: const Text('Get Page'),
+              onPressed: GetImcPage,
+              child: const Text('Go to IMC Page'),
+            ),
+            ElevatedButton(
+              onPressed: GetImcReportPage,
+              child: const Text('Go to IMC Report Page'),
             ),
           ],
         ),

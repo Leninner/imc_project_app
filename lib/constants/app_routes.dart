@@ -5,6 +5,8 @@ import 'package:imc_project_app/pages/login_page.dart';
 import 'package:imc_project_app/pages/register_page.dart';
 import 'package:imc_project_app/pages/splash_page.dart';
 
+import '../pages/report_imc_page.dart';
+
 class Routes {
   static String home = '/';
   static String login = '/login';
@@ -12,6 +14,7 @@ class Routes {
   static String register = '/register';
   static String splash = '/splash';
   static String imc = '/imc';
+  static String imcReport = '/imc-report';
 }
 
 Map<String, Widget Function(BuildContext)> AppRoutes(BuildContext context) {
@@ -21,5 +24,6 @@ Map<String, Widget Function(BuildContext)> AppRoutes(BuildContext context) {
     Routes.register: (context) => const RegisterPage(),
     Routes.splash: (context) => const SplashPage(),
     Routes.imc: (context) => const ImcPage(),
+    Routes.imcReport: (context) => const ImcReportPage(),
   };
 }
