@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -71,158 +72,153 @@ class _ImcPageState extends State<ImcPage> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  controller: _heightController,
-                  keyboardType: TextInputType.number,
-                  hintText: 'ALTURA',
-                ),
-              ),
-              const Expanded(
-                child: Text(
-                  'CM Ejemplo:(175 cm)',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Roboto',
-                    fontSize:  16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: CustomTextField(
-                  controller: _weightController,
-                  keyboardType: TextInputType.number,
-                  hintText: 'PESO',
-                ),
-              ),
-              const Expanded(
-                child: Text(
-                  'KG Ejemplo:(70,5 kg)',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Roboto',
-                    fontSize:  16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child:Center(
-                  child: Text(
-                    'Su indice de masa corporal es: $resultadoTexto',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Roboto',
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _heightController,
+                        keyboardType: TextInputType.number,
+                        hintText: 'ALTURA',
+                      ),
                     ),
-                  ),
+                    const Expanded(
+                      child: Text(
+                        'CM Ejemplo:(175 cm)',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Roboto',
+                          fontSize:  16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          CustomButton(
-            onTap: () async {
-              if(_weightController.text =='' || _heightController.text ==''){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Ingrese datos en los campos correspondientes'),
-                    duration: const Duration(seconds: 5),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  &&
-                       toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
-                calcularImc(_weightController.text, _heightController.text);
-              }else{
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Ingrese datos entre 20 y 300'),
-                    duration: const Duration(seconds: 5),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                        controller: _weightController,
+                        keyboardType: TextInputType.number,
+                        hintText: 'PESO',
+                      ),
+                    ),
+                    const Expanded(
+                      child: Text(
+                        'KG Ejemplo:(70,5 kg)',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'Roboto',
+                          fontSize:  16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child:Center(
+                        child: Text(
+                          'Su indice de masa corporal es: $resultadoTexto',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                ButtonWidget(
+                  onPressed: () async {
+                    if(_weightController.text =='' || _heightController.text ==''){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Ingrese datos en los campos correspondientes'),
+                          duration: const Duration(seconds: 5),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  &&
+                             toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
+                      calcularImc(_weightController.text, _heightController.text);
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Ingrese datos entre 20 y 300'),
+                          duration: const Duration(seconds: 5),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
 
-              }
-            },
-            buttonText: 'CALCULAR',
-            borderRadiusButton: 10,
-            buttonColor: Colors.purple[300],
-            textColor: Colors.white,
-            verticalSizeButton: 15,
-            horizontalMarginButton: 80,
-            fontSizeButton: 20,
-          ),
-          const SizedBox(height: 20),
-          CustomButton(
-            onTap: () async {
-              if(_weightController ==null || _heightController == null){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Ingrese datos en los campos correspondientes'),
-                    duration: const Duration(seconds: 5),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  ||
-                  toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
-                await _PostImcData(
-                    _weightController.text, _heightController.text);
-                limpiarDatos();
-              }else{
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Error en el ingreso de datos, revise y vuelva a intentar'),
-                    duration: const Duration(seconds: 5),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                    }
+                  },
+                  label: 'CALCULAR',
+                ),
+                const SizedBox(height: 20),
+                ButtonWidget(
+                  onPressed: () async {
+                    if(_weightController ==null || _heightController == null){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Ingrese datos en los campos correspondientes'),
+                          duration: const Duration(seconds: 5),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  ||
+                        toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
+                      await _PostImcData(
+                          _weightController.text, _heightController.text);
+                      limpiarDatos();
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Error en el ingreso de datos, revise y vuelva a intentar'),
+                          duration: const Duration(seconds: 5),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
 
-              }
-            },
-            buttonText: 'GUARDAR DATOS',
-            borderRadiusButton: 10,
-            buttonColor: Colors.purple[800],
-            textColor: Colors.white,
-            verticalSizeButton: 15,
-            horizontalMarginButton: 80,
-            fontSizeButton: 20,
-          ),
-          const SizedBox(height: 20),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10.0),
+                    }
+                  },
+                  label: 'GUARDAR',
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Text('Aqui va el grafico'),
+                ),
+              ],
             ),
-            child: Text('Aqui va el grafico'),
           ),
-        ],
+        ),
       ),
     );
   }
