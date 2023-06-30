@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField({
+  const CustomTextField({
     Key? key,
     required this.hintText,
     this.keyboardType,
@@ -32,13 +32,13 @@ class CustomTextField extends StatelessWidget {
             ],
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color(0xFFF2F2F3),
-              border: OutlineInputBorder(
+              fillColor: const Color(0xFFF2F2F3),
+              border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide.none,
               ),
               hintText: hintText,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Color(0xFF2C2B47),
                 fontSize: 16,
                 fontFamily: 'Roboto',
