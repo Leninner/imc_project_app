@@ -23,7 +23,8 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: sizeButton ?? 5.00),
+          padding: EdgeInsets.symmetric(
+              horizontal: 24, vertical: sizeButton ?? 5.00),
           child: TextField(
             controller: controller,
             keyboardType: keyboardType ?? TextInputType.text,

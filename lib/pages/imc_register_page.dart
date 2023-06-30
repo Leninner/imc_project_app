@@ -17,7 +17,7 @@ class _ImcPageState extends State<ImcPage> {
   double imc = 0.0;
   String resultText = '';
 
-  calculateImc(weight, height){
+  calculateImc(weight, height) {
     setState(() {
       imc = double.parse(weight) /
           (((double.parse(height)) / 100) * ((double.parse(height)) / 100));
@@ -27,17 +27,15 @@ class _ImcPageState extends State<ImcPage> {
 
   Future<void> _PostImcData(String weight, String height) async {
     calculateImc(weight, height);
-    await supabase
-        .from('user_imc')
-        .insert({
-      'userId':supabase.auth.currentUser!.id,
+    await supabase.from('user_imc').insert({
+      'userId': supabase.auth.currentUser!.id,
       'height': height,
-      'weight':weight,
-      'imc':imc,
+      'weight': weight,
+      'imc': imc,
     });
   }
 
-  cleanData(){
+  cleanData() {
     _weightController.clear();
     _heightController.clear();
     setState(() {
@@ -45,18 +43,16 @@ class _ImcPageState extends State<ImcPage> {
     });
   }
 
-  successMessage(){
+  successMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-          content: Text(
-              'Datos ingresados correctamente'),
+          content: Text('Datos ingresados correctamente'),
           duration: Duration(seconds: 3),
-          backgroundColor: Colors.green
-      ),
+          backgroundColor: Colors.green),
     );
   }
 
-  final TextEditingController  _weightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
 
   @override
@@ -90,7 +86,6 @@ class _ImcPageState extends State<ImcPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,7 +103,7 @@ class _ImcPageState extends State<ImcPage> {
                         style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Roboto',
-                          fontSize:  16,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -132,7 +127,7 @@ class _ImcPageState extends State<ImcPage> {
                         style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'Roboto',
-                          fontSize:  16,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -144,7 +139,7 @@ class _ImcPageState extends State<ImcPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child:Center(
+                      child: Center(
                         child: Text(
                           'Su indice de masa corporal es: $resultText',
                           style: const TextStyle(
@@ -160,7 +155,8 @@ class _ImcPageState extends State<ImcPage> {
                 const SizedBox(height: 30),
                 ButtonWidget(
                   onPressed: () async {
-                    if(_weightController.text =='' || _heightController.text ==''){
+                    if (_weightController.text == '' ||
+                        _heightController.text == '') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -169,19 +165,20 @@ class _ImcPageState extends State<ImcPage> {
                           backgroundColor: Colors.red,
                         ),
                       );
-                    }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  &&
-                             toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
-                      calculateImc(_weightController.text, _heightController.text);
-                    }else{
+                    } else if (toInt(_weightController.text)! > 20 &&
+                        toInt(_weightController.text)! < 300 &&
+                        toInt(_heightController.text)! > 20 &&
+                        toInt(_heightController.text)! < 300) {
+                      calculateImc(
+                          _weightController.text, _heightController.text);
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                              'Ingrese datos entre 20 y 300'),
+                          content: Text('Ingrese datos entre 20 y 300'),
                           duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ),
                       );
-
                     }
                   },
                   label: 'CALCULAR',
@@ -189,7 +186,8 @@ class _ImcPageState extends State<ImcPage> {
                 const SizedBox(height: 20),
                 ButtonWidget(
                   onPressed: () async {
-                    if(_weightController.text == '' || _heightController.text ==''){
+                    if (_weightController.text == '' ||
+                        _heightController.text == '') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -198,13 +196,15 @@ class _ImcPageState extends State<ImcPage> {
                           backgroundColor: Colors.red,
                         ),
                       );
-                    }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  ||
-                        toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
+                    } else if (toInt(_weightController.text)! > 20 &&
+                            toInt(_weightController.text)! < 300 ||
+                        toInt(_heightController.text)! > 20 &&
+                            toInt(_heightController.text)! < 300) {
                       await _PostImcData(
                           _weightController.text, _heightController.text);
                       cleanData();
                       successMessage();
-                    }else{
+                    } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -213,7 +213,6 @@ class _ImcPageState extends State<ImcPage> {
                           backgroundColor: Colors.red,
                         ),
                       );
-
                     }
                   },
                   label: 'GUARDAR',
