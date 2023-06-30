@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imc_project_app/pages/home_page.dart';
-import 'package:imc_project_app/pages/imc-register-page.dart';
+import 'package:imc_project_app/pages/imc_register_page.dart';
 import 'package:imc_project_app/pages/login_page.dart';
 import 'package:imc_project_app/pages/register_page.dart';
 import 'package:imc_project_app/pages/splash_page.dart';

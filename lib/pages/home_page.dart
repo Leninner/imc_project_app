@@ -9,16 +9,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _GetPage() async {
+    Future<void> GetPage() async {
       Navigator.of(context).pushReplacementNamed(Routes.imc);
-    };
+    }
     return Scaffold(
       body: Center(
         child: Column(
           children: [
-            Text('Home Page'),
+            const Text('Home Page'),
             ElevatedButton(
-              onPressed: _GetPage,
+              onPressed: GetPage,
               child: const Text('Get Page'),
             ),
           ],

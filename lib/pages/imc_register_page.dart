@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_routes.dart';
 import '../main.dart';
-import '../widgets/custom_button.dart';
 
 class ImcPage extends StatefulWidget {
   const ImcPage({Key? key}) : super(key: key);
@@ -16,18 +15,18 @@ class ImcPage extends StatefulWidget {
 
 class _ImcPageState extends State<ImcPage> {
   double imc = 0.0;
-  String resultadoTexto = '';
+  String resultText = '';
 
-  calcularImc(weight, height){
+  calculateImc(weight, height){
     setState(() {
       imc = double.parse(weight) /
           (((double.parse(height)) / 100) * ((double.parse(height)) / 100));
-      resultadoTexto = double.parse(imc.toStringAsFixed(2)).toString();
+      resultText = double.parse(imc.toStringAsFixed(2)).toString();
     });
   }
 
   Future<void> _PostImcData(String weight, String height) async {
-    calcularImc(weight, height);
+    calculateImc(weight, height);
     await supabase
         .from('user_imc')
         .insert({
@@ -38,16 +37,27 @@ class _ImcPageState extends State<ImcPage> {
     });
   }
 
-  limpiarDatos(){
+  cleanData(){
     _weightController.clear();
     _heightController.clear();
     setState(() {
-      resultadoTexto = '';
+      resultText = '';
     });
   }
 
-  TextEditingController _weightController = TextEditingController();
-  TextEditingController _heightController = TextEditingController();
+  successMessage(){
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Text(
+              'Datos ingresados correctamente'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.green
+      ),
+    );
+  }
+
+  final TextEditingController  _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +71,10 @@ class _ImcPageState extends State<ImcPage> {
         child: const Icon(Icons.arrow_back),
       ),
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Calculadora de IMC',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: 'Roboto',
               fontSize: 22.0,
@@ -136,7 +146,7 @@ class _ImcPageState extends State<ImcPage> {
                     Expanded(
                       child:Center(
                         child: Text(
-                          'Su indice de masa corporal es: $resultadoTexto',
+                          'Su indice de masa corporal es: $resultText',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -155,19 +165,19 @@ class _ImcPageState extends State<ImcPage> {
                         const SnackBar(
                           content: Text(
                               'Ingrese datos en los campos correspondientes'),
-                          duration: const Duration(seconds: 5),
+                          duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }else if(toInt(_weightController.text)! > 20 && toInt(_weightController.text)! < 300  &&
                              toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
-                      calcularImc(_weightController.text, _heightController.text);
+                      calculateImc(_weightController.text, _heightController.text);
                     }else{
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
                               'Ingrese datos entre 20 y 300'),
-                          duration: const Duration(seconds: 5),
+                          duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -179,12 +189,12 @@ class _ImcPageState extends State<ImcPage> {
                 const SizedBox(height: 20),
                 ButtonWidget(
                   onPressed: () async {
-                    if(_weightController ==null || _heightController == null){
+                    if(_weightController.text == '' || _heightController.text ==''){
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
                               'Ingrese datos en los campos correspondientes'),
-                          duration: const Duration(seconds: 5),
+                          duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -192,13 +202,14 @@ class _ImcPageState extends State<ImcPage> {
                         toInt(_heightController.text)! > 20 && toInt(_heightController.text)! < 300 ){
                       await _PostImcData(
                           _weightController.text, _heightController.text);
-                      limpiarDatos();
+                      cleanData();
+                      successMessage();
                     }else{
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
                               'Error en el ingreso de datos, revise y vuelva a intentar'),
-                          duration: const Duration(seconds: 5),
+                          duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -213,7 +224,7 @@ class _ImcPageState extends State<ImcPage> {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  child: Text('Aqui va el grafico'),
+                  child: const Text('Aquí va el grafico'),
                 ),
               ],
             ),
@@ -225,7 +236,7 @@ class _ImcPageState extends State<ImcPage> {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: ImcPage(),
   ));
 }
