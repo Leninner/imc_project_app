@@ -3,7 +3,6 @@ import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../constants/app_routes.dart';
 import '../main.dart';
 
 class ImcPage extends StatefulWidget {
@@ -59,14 +58,14 @@ class _ImcPageState extends State<ImcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacementNamed(Routes.home);
-        },
-        backgroundColor: Colors.purple[800],
-        child: const Icon(Icons.arrow_back),
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.of(context).pushReplacementNamed(Routes.home);
+      //   },
+      //   backgroundColor: Colors.purple[800],
+      //   child: const Icon(Icons.arrow_back),
+      // ),
       appBar: AppBar(
         title: const Center(
           child: Text(
@@ -161,8 +160,9 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Ingrese datos en los campos correspondientes'),
-                          duration: Duration(seconds: 5),
+                            'Ingrese datos en los campos correspondientes',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -176,13 +176,13 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Ingrese datos entre 20 y 300'),
-                          duration: Duration(seconds: 5),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                   },
-                  label: 'CALCULAR',
+                  label: 'Calcular',
                 ),
                 const SizedBox(height: 20),
                 ButtonWidget(
@@ -192,8 +192,9 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Ingrese datos en los campos correspondientes'),
-                          duration: Duration(seconds: 5),
+                            'Ingrese datos en los campos correspondientes',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -202,21 +203,24 @@ class _ImcPageState extends State<ImcPage> {
                         toInt(_heightController.text)! > 20 &&
                             toInt(_heightController.text)! < 300) {
                       await _PostImcData(
-                          _weightController.text, _heightController.text);
+                        _weightController.text,
+                        _heightController.text,
+                      );
                       cleanData();
                       successMessage();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Error en el ingreso de datos, revise y vuelva a intentar'),
-                          duration: Duration(seconds: 5),
+                            'Error en el ingreso de datos, revise y vuelva a intentar',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                   },
-                  label: 'GUARDAR',
+                  label: 'Guardar',
                 ),
                 const SizedBox(height: 20),
                 Container(
@@ -233,10 +237,4 @@ class _ImcPageState extends State<ImcPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: ImcPage(),
-  ));
 }
