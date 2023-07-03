@@ -46,9 +46,10 @@ class _ImcPageState extends State<ImcPage> {
   successMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-          content: Text('Datos ingresados correctamente'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.green),
+        content: Text('Datos ingresados correctamente'),
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 
