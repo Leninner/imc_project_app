@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:imc_project_app/pages/home_page.dart';
 import 'package:imc_project_app/pages/imc_register_page.dart';
 import 'package:imc_project_app/pages/login_page.dart';
+import 'package:imc_project_app/pages/profile_page.dart';
+import 'package:imc_project_app/pages/register_food_page.dart';
 import 'package:imc_project_app/pages/register_page.dart';
 import 'package:imc_project_app/pages/splash_page.dart';
 
@@ -12,6 +14,8 @@ class Routes {
   static String register = '/register';
   static String splash = '/splash';
   static String imc = '/imc';
+  static String registerFood = '/register-food';
+  static String profile = '/profile';
 }
 
 Map<String, Widget Function(BuildContext)> AppRoutes(BuildContext context) {
@@ -21,5 +25,7 @@ Map<String, Widget Function(BuildContext)> AppRoutes(BuildContext context) {
     Routes.register: (context) => const RegisterPage(),
     Routes.splash: (context) => const SplashPage(),
     Routes.imc: (context) => const ImcPage(),
+    Routes.registerFood: (context) => const RegisterFoodPage(),
+    Routes.profile: (context) => const ProfilePage(),
   };
 }
