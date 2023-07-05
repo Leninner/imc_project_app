@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/widgets/custom_appbar.dart';
 
 import '../constants/app_routes.dart';
 
@@ -13,20 +14,7 @@ class HomePage extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  Routes.profile,
-                );
-              },
-              icon: const Icon(Icons.person),
-            ),
-          ],
-        ),
+        appBar: const CustomAppBar(titleText:'Home Page'),
         body: Center(
           child: Column(
             children: [
