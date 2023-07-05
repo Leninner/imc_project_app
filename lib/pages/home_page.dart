@@ -41,8 +41,17 @@ class HomePage extends StatelessWidget {
                     Routes.registerFood,
                   );
                 },
-                child: const Text('Register Alimentos'),
+                child: const Text('Registro de alimentos'),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushReplacementNamed(
+                    Routes.imcReport,
+                  );
+                },
+                child: const Text('Ver registros de IMC'),
+              ),
+
             ],
           ),
         ),
