@@ -47,9 +47,10 @@ class _ImcPageState extends State<ImcPage> {
   successMessage() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-          content: Text('Datos ingresados correctamente'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.green),
+        content: Text('Datos ingresados correctamente'),
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 
@@ -59,6 +60,7 @@ class _ImcPageState extends State<ImcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -150,8 +152,9 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Ingrese datos en los campos correspondientes'),
-                          duration: Duration(seconds: 5),
+                            'Ingrese datos en los campos correspondientes',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -165,13 +168,13 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Ingrese datos entre 20 y 300'),
-                          duration: Duration(seconds: 5),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                   },
-                  label: 'CALCULAR',
+                  label: 'Calcular',
                 ),
                 const SizedBox(height: 20),
                 ButtonWidget(
@@ -181,8 +184,9 @@ class _ImcPageState extends State<ImcPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Ingrese datos en los campos correspondientes'),
-                          duration: Duration(seconds: 5),
+                            'Ingrese datos en los campos correspondientes',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -191,21 +195,24 @@ class _ImcPageState extends State<ImcPage> {
                         toInt(_heightController.text)! > 20 &&
                             toInt(_heightController.text)! < 300) {
                       await _PostImcData(
-                          _weightController.text, _heightController.text);
+                        _weightController.text,
+                        _heightController.text,
+                      );
                       cleanData();
                       successMessage();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Error en el ingreso de datos, revise y vuelva a intentar'),
-                          duration: Duration(seconds: 5),
+                            'Error en el ingreso de datos, revise y vuelva a intentar',
+                          ),
+                          duration: Duration(seconds: 2),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                   },
-                  label: 'GUARDAR',
+                  label: 'Guardar',
                 ),
                 const SizedBox(height: 20),
                 Container(
@@ -222,10 +229,4 @@ class _ImcPageState extends State<ImcPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: ImcPage(),
-  ));
 }

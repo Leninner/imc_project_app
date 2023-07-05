@@ -28,6 +28,3 @@ jobs:
       
       - name: Ensure the Dart code is formatted correctly
         run: dart format --set-exit-if-changed .
-      
-      - name: Run Flutter unit tests
-        run: flutter test

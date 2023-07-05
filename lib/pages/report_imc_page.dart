@@ -68,6 +68,10 @@ class _ImcReportPageState extends State<ImcReportPage> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return ListTile(
+                        leading: Icon(
+                          Icons.monitor_weight,
+                          color: Colors.purple[900],
+                        ),
                         title: Text('IMC:${snapshot.data![index]['imc']}',
                           style: const TextStyle(
                             color: Colors.black,
