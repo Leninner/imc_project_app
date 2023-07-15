@@ -11,6 +11,8 @@ class InputField extends StatefulWidget {
   final bool readOnly;
   final Function()? validator;
   final InputTypes shouldHas;
+  final String hintText;
+  final bool disabled;
 
   const InputField({
     super.key,
@@ -22,6 +24,8 @@ class InputField extends StatefulWidget {
     this.readOnly = false,
     this.validator,
     this.shouldHas = InputTypes.mixed,
+    this.hintText = '',
+    this.disabled = false,
   });
 
   @override
@@ -48,7 +52,12 @@ class _InputFieldState extends State<InputField> {
       obscureText:
           widget.label.contains('Contraseña') ? !_passwordVisible : false,
       decoration: InputDecoration(
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
         labelText: widget.label,
+        hintText: widget.hintText,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
@@ -69,6 +78,7 @@ class _InputFieldState extends State<InputField> {
         FocusScope.of(context).unfocus();
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      enabled: !widget.disabled,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Ingrese su ${widget.label.toLowerCase().replaceFirst('*', '')}';

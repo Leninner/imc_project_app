@@ -106,7 +106,7 @@ class RegisterPageState extends State<RegisterPage> {
       appBar: null,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: const EdgeInsets.all(24),
           child: SafeArea(
             child: Column(
               children: [

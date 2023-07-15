@@ -6,7 +6,6 @@ class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AccountPageState createState() => _AccountPageState();
 }
 
@@ -16,7 +15,6 @@ class _AccountPageState extends State<AccountPage> {
 
   var _loading = true;
 
-  /// Called once a user id is received within `onAuthenticated()`
   Future<void> _getProfile() async {
     setState(() {
       _loading = true;
@@ -50,7 +48,6 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  /// Called when user taps `Update` button
   Future<void> _updateProfile() async {
     setState(() {
       _loading = true;
