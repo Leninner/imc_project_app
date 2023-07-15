@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../constants/app_routes.dart';
 import '../main.dart';
 import '../widgets/custom_appbar.dart';
 
@@ -60,16 +60,16 @@ class _ImcPageState extends State<ImcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushReplacementNamed(Routes.home);
+          cleanData();
         },
-        backgroundColor: Colors.purple[800],
-        child: const Icon(Icons.arrow_back),
+        backgroundColor: Colors.green,
+        child: const Icon(Icons.refresh),
       ),
-      appBar:  const CustomAppBar(titleText: 'Reporte IMC'),
+      appBar: CustomAppBar(
+        title: 'IMC',
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -213,14 +213,6 @@ class _ImcPageState extends State<ImcPage> {
                     }
                   },
                   label: 'Guardar',
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Text('Aquí va el grafico'),
                 ),
               ],
             ),
