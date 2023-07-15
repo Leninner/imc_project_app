@@ -26,7 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const CustomAppBar(),
+      appBar: CustomAppBar(
+        title: 'Perfil',
+      ),
       body: buildBody(),
     );
   }

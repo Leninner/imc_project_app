@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final bool automaticallyImplyLeading;
+  final String title;
+  final List<Widget>? actions;
+  final bool isBackButton;
 
   const CustomAppBar({
     super.key,
-    this.automaticallyImplyLeading = false,
+    this.actions,
+    required this.title,
+    this.isBackButton = true,
   });
 
   @override
@@ -19,18 +23,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: widget.automaticallyImplyLeading,
-      title: const Text('Profile'),
+      title: Text(widget.title),
       centerTitle: true,
-      leading: IconButton(
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-        icon: const Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-      ),
+      leading: widget.isBackButton
+          ? IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+            )
+          : null,
       titleTextStyle: const TextStyle(
         color: Colors.black,
         fontSize: 20,
@@ -38,6 +40,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       ),
       backgroundColor: Colors.transparent,
       elevation: 0,
+      actions: widget.actions,
     );
   }
 }

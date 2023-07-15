@@ -44,15 +44,9 @@ class _ImcReportPageState extends State<ImcReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).pushReplacementNamed(Routes.home);
-          },
-          backgroundColor: Colors.purple[800],
-          child: const Icon(Icons.arrow_back),
+        appBar: CustomAppBar(
+          title: 'IMC Reports',
         ),
-        appBar: const CustomAppBar(),
         body: RefreshIndicator(
           onRefresh: () async {
             setState(() {});
