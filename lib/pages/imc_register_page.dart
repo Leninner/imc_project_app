@@ -59,15 +59,8 @@ class _ImcPageState extends State<ImcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          cleanData();
-        },
-        backgroundColor: Colors.green,
-        child: const Icon(Icons.refresh),
-      ),
       appBar: const CustomAppBar(
-        title: 'IMC',
+        title: 'Registro de IMC',
       ),
       body: SingleChildScrollView(
         child: Padding(

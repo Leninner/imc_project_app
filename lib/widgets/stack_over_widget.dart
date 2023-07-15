@@ -70,7 +70,7 @@ class _StackOverWidgetState extends State<StackOverWidget>
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.imc);
                       },
-                      label: 'Registrar IMC',
+                      label: 'Registrar Índice de Masa Corporal',
                     ),
                     const Text(
                       'IMC',
