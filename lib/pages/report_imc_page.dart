@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../constants/app_routes.dart';
 import '../main.dart';
 import '../widgets/custom_appbar.dart';
 
@@ -27,11 +26,20 @@ class _ImcReportPageState extends State<ImcReportPage> {
 
   Future<List<dynamic>> GetData() async {
     final response = await supabase
-        .from('user_imc')
-        .select('createdAt,imc')
-        .eq('userId', supabase.auth.currentUser!.id);
+        .from(
+          'user_imc',
+        )
+        .select(
+          'createdAt,imc',
+        )
+        .eq(
+          'userId',
+          supabase.auth.currentUser!.id,
+        );
+
     final formattedDateResponse = response.map((item) {
       final createdAt = formatDate(item['createdAt']);
+
       return {
         'createdAt': createdAt,
         'imc': item['imc'],
