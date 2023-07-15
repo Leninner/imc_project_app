@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
+import 'package:imc_project_app/widgets/custom_appbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -25,26 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Profile'),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-        ),
-        titleTextStyle: const TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(),
       body: buildBody(),
     );
   }

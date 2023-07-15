@@ -1,30 +1,43 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({
-    Key? key,
-    required this.titleText,
-  }) : super(key: key);
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+  final bool automaticallyImplyLeading;
 
-  final String? titleText;
+  const CustomAppBar({
+    super.key,
+    this.automaticallyImplyLeading = false,
+  });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  State<CustomAppBar> createState() => _CustomAppBarState();
 
+  @override
+  Size get preferredSize => const Size.fromHeight(50);
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
-      title: Center(
-        child: Text(
-          titleText ?? 'Titulo',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Roboto',
-            fontSize: 22.0,
-          ),
+      automaticallyImplyLeading: widget.automaticallyImplyLeading,
+      title: const Text('Profile'),
+      centerTitle: true,
+      leading: IconButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.black,
         ),
       ),
+      titleTextStyle: const TextStyle(
+        color: Colors.black,
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 }

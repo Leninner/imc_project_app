@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Home'),
           centerTitle: true,
           actions: [
@@ -37,7 +38,7 @@ class HomePage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed(
+                  Navigator.of(context).pushNamed(
                     Routes.registerFood,
                   );
                 },
@@ -45,13 +46,12 @@ class HomePage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed(
+                  Navigator.of(context).pushNamed(
                     Routes.imcReport,
                   );
                 },
                 child: const Text('Ver registros de IMC'),
               ),
-
             ],
           ),
         ),
