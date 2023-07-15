@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -67,7 +66,7 @@ class _ImcPageState extends State<ImcPage> {
         backgroundColor: Colors.green,
         child: const Icon(Icons.refresh),
       ),
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: 'IMC',
       ),
       body: SingleChildScrollView(

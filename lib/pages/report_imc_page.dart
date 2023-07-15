@@ -44,7 +44,7 @@ class _ImcReportPageState extends State<ImcReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
+        appBar: const CustomAppBar(
           title: 'IMC Reports',
         ),
         body: RefreshIndicator(
