@@ -1,7 +1,5 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_appbar.dart';
 import 'package:imc_project_app/widgets/input_field.dart';
 
@@ -13,8 +11,6 @@ class RegisterFoodPage extends StatefulWidget {
 }
 
 class _RegisterFoodPageState extends State<RegisterFoodPage> {
-  bool? _popupBuilderSelection = false;
-  final _popupBuilderKey = GlobalKey<DropdownSearchState<String>>();
   final foodFormKey = GlobalKey<FormState>();
   final TextEditingController _caloriesController = TextEditingController();
   bool _useDefaultCalories = false;
@@ -25,25 +21,14 @@ class _RegisterFoodPageState extends State<RegisterFoodPage> {
     });
   }
 
+  void handleSubmit() {}
+
   @override
   Widget build(BuildContext context) {
-    void handleCheckBoxState({bool updateState = true}) {
-      var selectedItem =
-          _popupBuilderKey.currentState?.popupGetSelectedItems ?? [];
-      var isAllSelected =
-          _popupBuilderKey.currentState?.popupIsAllItemSelected ?? false;
-      _popupBuilderSelection =
-          selectedItem.isEmpty ? false : (isAllSelected ? true : null);
-
-      if (updateState) setState(() {});
-    }
-
-    handleCheckBoxState(updateState: false);
-
     return Scaffold(
       appBar: const CustomAppBar(title: 'Alimentación'),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: foodFormKey,
           child: Center(
@@ -103,11 +88,18 @@ class _RegisterFoodPageState extends State<RegisterFoodPage> {
                       onTap: () {
                         handleUseDefaultCalories();
                       },
-                      child: const Text('Usar calorías por defecto'),
+                      child: const Text(
+                        'Usar calorías por defecto',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 18),
                 DropdownButtonFormField(
                   decoration: const InputDecoration(
                     labelText: 'Tipo de comida *',
@@ -137,123 +129,60 @@ class _RegisterFoodPageState extends State<RegisterFoodPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Cancelar'),
+                    Expanded(
+                      child: SizedBox(
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: const BorderSide(
+                                color: Color.fromRGBO(44, 43, 71, 1),
+                              ),
+                            ),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text(
+                            'Cancelar',
+                            style: TextStyle(
+                              color: Color.fromRGBO(44, 43, 71, 1),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      child: const Text('Guardar'),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: SizedBox(
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromRGBO(44, 43, 71, 1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: handleSubmit,
+                          child: const Text(
+                            'Registrar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 )
-                // DropdownSearch<String>.multiSelection(
-                //   key: _popupBuilderKey,
-                //   items: List.generate(30, (index) => "$index"),
-                //   popupProps: PopupPropsMultiSelection.dialog(
-                //     onItemAdded: (l, s) => handleCheckBoxState(),
-                //     onItemRemoved: (l, s) => handleCheckBoxState(),
-                //     showSearchBox: true,
-                //     searchFieldProps: const TextFieldProps(
-                //       decoration: InputDecoration(
-                //         border: OutlineInputBorder(),
-                //         prefixIcon: Icon(Icons.search),
-                //         hintText: 'Buscar',
-                //       ),
-                //     ),
-                //     containerBuilder: (ctx, popupWidget) {
-                //       return _CheckBoxWidget(
-                //         isSelected: _popupBuilderSelection,
-                //         onChanged: (v) {
-                //           if (v == true) {
-                //             _popupBuilderKey.currentState!
-                //                 .popupSelectAllItems();
-                //           } else if (v == false) {
-                //             _popupBuilderKey.currentState!
-                //                 .popupDeselectAllItems();
-                //             handleCheckBoxState();
-                //           }
-                //         },
-                //         child: popupWidget,
-                //       );
-                //     },
-                //   ),
-                //   dropdownDecoratorProps: const DropDownDecoratorProps(
-                //     dropdownSearchDecoration: InputDecoration(
-                //       border: OutlineInputBorder(),
-                //       labelText: 'Alimentos',
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _CheckBoxWidget extends StatefulWidget {
-  final Widget child;
-  final bool? isSelected;
-  final ValueChanged<bool?>? onChanged;
-
-  _CheckBoxWidget({required this.child, this.isSelected, this.onChanged});
-
-  @override
-  CheckBoxState createState() => CheckBoxState();
-}
-
-class CheckBoxState extends State<_CheckBoxWidget> {
-  bool? isSelected;
-
-  @override
-  void initState() {
-    super.initState();
-    isSelected = widget.isSelected;
-  }
-
-  @override
-  void didUpdateWidget(covariant _CheckBoxWidget oldWidget) {
-    if (widget.isSelected != isSelected) isSelected = widget.isSelected;
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color(0x88F44336),
-            Colors.blue,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('Select: '),
-              Checkbox(
-                  value: isSelected,
-                  tristate: true,
-                  onChanged: (bool? v) {
-                    if (v == null) v = false;
-                    setState(() {
-                      isSelected = v;
-                      if (widget.onChanged != null) widget.onChanged!(v);
-                    });
-                  }),
-            ],
-          ),
-          Expanded(child: widget.child),
-        ],
       ),
     );
   }
