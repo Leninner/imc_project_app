@@ -7,10 +7,10 @@ part 'imc_state.dart';
 
 class ImcBloc extends Bloc<ImcEvent, ImcState> {
   ImcBloc() : super(ImcInitial()) {
-    on<LoadDataEvent>(_handleLoadEvent);
+    on<GetImcEvent>(_handleGetImcEvent);
   }
 
-  void _handleLoadEvent(LoadDataEvent event, Emitter<ImcState> emit) async {
+  void _handleGetImcEvent(GetImcEvent event, Emitter<ImcState> emit) async {
     emit(ImcLoading());
 
     final prevImc = await ImcService().getUserImc();
@@ -20,7 +20,7 @@ class ImcBloc extends Bloc<ImcEvent, ImcState> {
         emit(ImcError(l));
       },
       (r) {
-        emit(ImcLoaded.initial(imc: r));
+        emit(ImcLoaded(r));
       },
     );
   }

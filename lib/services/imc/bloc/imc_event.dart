@@ -7,4 +7,4 @@ abstract class ImcEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadDataEvent extends ImcEvent {}
+class GetImcEvent extends ImcEvent {}

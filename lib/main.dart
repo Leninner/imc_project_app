@@ -4,6 +4,7 @@ import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/constants/breakpoints.dart';
 import 'package:imc_project_app/constants/navigation_service.dart';
 import 'package:imc_project_app/constants/styles/theme.dart';
+import 'package:imc_project_app/services/food/bloc/food_bloc.dart';
 import 'package:imc_project_app/services/imc/bloc/imc_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -31,6 +32,9 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (BuildContext context) => ImcBloc(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FoodBloc(),
         ),
       ],
       child: MaterialApp(

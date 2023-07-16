@@ -21,18 +21,10 @@ class ImcError extends ImcState {
 }
 
 class ImcLoaded extends ImcState {
-  final List<Map<String, String>>? imc;
-  final List<Map<String, String>>? food;
+  final List<Map<String, String>> imc;
 
-  const ImcLoaded.initial({this.imc = const [], this.food = const []});
+  const ImcLoaded(this.imc);
 
-  ImcLoaded copyWith({
-    List<Map<String, String>>? imc,
-    List<Map<String, String>>? food,
-  }) {
-    return ImcLoaded.initial(
-      imc: imc ?? this.imc,
-      food: food ?? this.food,
-    );
-  }
+  @override
+  List<Object> get props => [imc];
 }
