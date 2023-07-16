@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../constants/app_routes.dart';
 import '../main.dart';
-import '../widgets/custom_appbar.dart';
 
 class ImcChartReportPage extends StatefulWidget {
   const ImcChartReportPage({Key? key}) : super(key: key);
@@ -116,9 +114,9 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                            final createdAt = DateFormat('dd-MM-yyyy')
                                .parse(item['createdAt']);
                            return createdAt.isAfter(
-                               firstDayOfMonth.subtract(Duration(days: 1))) &&
+                               firstDayOfMonth.subtract(const Duration(days: 1))) &&
                                createdAt.isBefore(
-                                   lastDayOfMonth.add(Duration(days: 1)));
+                                   lastDayOfMonth.add(const Duration(days: 1)));
                          }).toList();
                          return SfCartesianChart(
                            primaryXAxis: DateTimeAxis(
@@ -143,14 +141,14 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           final currentDate = DateTime.now();
                           final weekStart = currentDate.subtract(
                               Duration(days: currentDate.weekday - 1));
-                          final weekEnd = weekStart.add(Duration(days: 6));
+                          final weekEnd = weekStart.add(const Duration(days: 6));
                           final filteredData = imcData.where((item) {
                             final createdAt = DateFormat('dd-MM-yyyy')
                                 .parse(item['createdAt']);
                             return createdAt.isAfter(
-                                    weekStart.subtract(Duration(days: 1))) &&
+                                    weekStart.subtract(const Duration(days: 1))) &&
                                 createdAt
-                                    .isBefore(weekEnd.add(Duration(days: 1)));
+                                    .isBefore(weekEnd.add(const Duration(days: 1)));
                           }).toList();
                           return SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -181,8 +179,8 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                             final monthYear = DateFormat('MMMM-yyyy').format(createdAt);
                             final imc = data['imc'].toDouble();
 
-                            if (createdAt.isAfter(firstDayOfYear.subtract(Duration(days: 1))) &&
-                                createdAt.isBefore(lastDayOfYear.add(Duration(days: 1)))) {
+                            if (createdAt.isAfter(firstDayOfYear.subtract(const Duration(days: 1))) &&
+                                createdAt.isBefore(lastDayOfYear.add(const Duration(days: 1)))) {
                               if (monthlyData.containsKey(monthYear)) {
                                 monthlyData[monthYear]!.add(imc);
                               } else {
@@ -215,13 +213,7 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           );
                         }
                         else if (_selectedFilter == 'Anual') {
-                          final currentDate = DateTime.now();
-                          final firstDayOfYear =
-                              DateTime(currentDate.year, 1, 1);
-                          final lastDayOfYear =
-                              DateTime(currentDate.year, 12, 31);
                           final yearData = <String, List<double>>{};
-
                           for (final data in imcData) {
                             final createdAt = DateFormat('dd-MM-yyyy')
                                 .parse(data['createdAt']);

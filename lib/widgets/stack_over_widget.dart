@@ -160,10 +160,10 @@ class _StackOverWidgetState extends State<StackOverWidget>
                                               .parse(item['createdAt']);
                                           return createdAt.isAfter(
                                               firstDayOfMonth.subtract(
-                                                  Duration(days: 1))) &&
+                                                  const Duration(days: 1))) &&
                                               createdAt.isBefore(
                                                   lastDayOfMonth.add(
-                                                      Duration(days: 1)));
+                                                      const Duration(days: 1)));
                                         })
                                             .toList();
                                         return SfCartesianChart(
