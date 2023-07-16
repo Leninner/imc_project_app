@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/services/food/models/food_model.dart';
+import 'package:imc_project_app/services/food/models/food_user_model.dart';
 import 'package:imc_project_app/services/food/models/schedule_model.dart';
 import 'package:imc_project_app/services/food/models/user_food_request_model.dart';
 
@@ -86,6 +87,42 @@ class FoodService {
       return const Right(true);
     } catch (e) {
       return Left(Exception('Error al guardar el alimento'));
+    }
+  }
+
+  Future<Either<Exception, List<Map<String, String>>>> getUserFood() async {
+    try {
+      final response = await supabase
+          .from(
+            'user_food',
+          )
+          .select(
+            'calories, createdAt, schedule (name), food (name)',
+          )
+          .eq(
+            'userId',
+            supabase.auth.currentUser!.id,
+          );
+
+      if (response.length == 0) {
+        return Left(Exception('No hay alimentos registrados'));
+      }
+
+      final List<Map<String, String>> userFoods = response
+          .map<Map<String, String>>(
+            (e) => FoodUserModel(
+              foodName: e['food']['name'].toString(),
+              calories: e['calories'].toString(),
+              scheduleName: e['schedule']['name'].toString(),
+              createdAt: e['createdAt'].toString(),
+            ).toJson(),
+          )
+          .toList();
+
+      return Right(userFoods);
+    } catch (e) {
+      print(e);
+      return Left(Exception('Error al obtener los alimentos'));
     }
   }
 }
