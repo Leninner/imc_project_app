@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
+import 'package:imc_project_app/widgets/default_table.dart';
 
 class StackOverWidget extends StatefulWidget {
   const StackOverWidget({Key? key}) : super(key: key);
@@ -63,66 +64,168 @@ class _StackOverWidgetState extends State<StackOverWidget>
                 padding: const EdgeInsets.symmetric(
                   vertical: 20,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ButtonWidget(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.imc);
-                      },
-                      label: 'Registrar Índice de Masa Corporal',
-                    ),
-                    const Text(
-                      'IMC',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ButtonWidget(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.imc);
+                        },
+                        label: 'Registrar Índice de Masa Corporal',
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Text(
-                      'IMC',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
+                      // show a placeholder widget to occupy the space
+                      const Placeholder(
+                        fallbackHeight: 200,
+                        fallbackWidth: double.infinity,
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      DefaultTable(
+                        title: 'Últimos IMC registrados',
+                        headers: const [
+                          {
+                            'label': 'Nombre',
+                            'tooltip': 'Nombre del alimento',
+                            'value': 'name',
+                          },
+                          {
+                            'label': 'Calorías (Kcal)',
+                            'tooltip': 'Calorías del alimento',
+                            'value': 'calories',
+                          },
+                          {
+                            'label': 'Fecha de registro',
+                            'tooltip': 'Fecha de registro del alimento',
+                            'value': 'createdAt',
+                          },
+                        ],
+                        data: const [
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          }
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 20,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ButtonWidget(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.registerFood);
-                      },
-                      label: 'Registrar Alimento',
-                    ),
-                    const Text(
-                      'Alimentación',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ButtonWidget(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.registerFood);
+                        },
+                        label: 'Registrar Alimento',
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Text(
-                      'Alimentación',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
+                      const Text(
+                        'Alimentación',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      DefaultTable(
+                        title: 'Últimos IMC registrados',
+                        headers: const [
+                          {
+                            'label': 'IMC',
+                            'tooltip': 'Índice de Masa Corporal',
+                            'value': 'imc',
+                          },
+                          {
+                            'label': 'IMC',
+                            'tooltip': 'Índice de Masa Corporal',
+                            'value': 'imc',
+                          },
+                          {
+                            'label': 'IMC',
+                            'tooltip': 'Índice de Masa Corporal',
+                            'value': 'imc',
+                          },
+                        ],
+                        data: const [
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          },
+                          {
+                            'name': 'Manzana',
+                            'calories': '100',
+                            'createdAt': '12/12/2021',
+                          }
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
