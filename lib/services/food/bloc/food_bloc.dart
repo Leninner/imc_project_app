@@ -17,8 +17,6 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
 
     prevResult.fold(
       (l) {
-        print(l);
-
         emit(FoodError(l));
       },
       (r) => emit(FoodLoaded(r)),

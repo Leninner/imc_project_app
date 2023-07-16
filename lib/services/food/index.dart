@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/services/food/models/food_model.dart';
 import 'package:imc_project_app/services/food/models/food_user_model.dart';
@@ -121,7 +122,6 @@ class FoodService {
 
       return Right(userFoods);
     } catch (e) {
-      print(e);
       return Left(Exception('Error al obtener los alimentos'));
     }
   }
