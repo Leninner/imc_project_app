@@ -68,7 +68,7 @@ class DefaultTable extends StatelessWidget {
             .toList(),
         rowsPerPage: 8,
         showCheckboxColumn: false,
-        columnSpacing: 100,
+        columnSpacing: 80,
       ),
     );
   }
