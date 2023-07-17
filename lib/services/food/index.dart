@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/services/food/models/food_model.dart';
 import 'package:imc_project_app/services/food/models/food_user_model.dart';
@@ -93,6 +92,12 @@ class FoodService {
 
   Future<Either<Exception, List<Map<String, String>>>> getUserFood() async {
     try {
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        return Left(Exception('No hay usuario logueado'));
+      }
+
       final response = await supabase
           .from(
             'user_food',
@@ -102,7 +107,7 @@ class FoodService {
           )
           .eq(
             'userId',
-            supabase.auth.currentUser!.id,
+            userId,
           );
 
       if (response.length == 0) {

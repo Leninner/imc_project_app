@@ -4,12 +4,14 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final bool isBackButton;
+  final String? toBackRouteName;
 
   const CustomAppBar({
     super.key,
     this.actions,
     required this.title,
     this.isBackButton = true,
+    this.toBackRouteName,
   });
 
   @override
@@ -28,7 +30,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
       leading: widget.isBackButton
           ? IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                if (widget.toBackRouteName == null) {
+                  Navigator.of(context).pop();
+                  return;
+                }
+
+                Navigator.of(context).pushReplacementNamed(
+                  widget.toBackRouteName!,
+                );
               },
               icon: const Icon(Icons.arrow_back, color: Colors.black),
             )

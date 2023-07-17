@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/services/food/models/food_model.dart';
 import 'package:imc_project_app/services/food/index.dart';
 import 'package:imc_project_app/services/food/models/schedule_model.dart';
@@ -59,7 +60,7 @@ class _RegisterUserFoodPageState extends State<RegisterUserFoodPage> {
             ),
           );
 
-          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed(Routes.home);
         },
       );
     } else {
@@ -82,7 +83,10 @@ class _RegisterUserFoodPageState extends State<RegisterUserFoodPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Alimentación'),
+      appBar: CustomAppBar(
+        title: 'Alimentación',
+        toBackRouteName: Routes.home,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -215,7 +219,10 @@ class _RegisterUserFoodPageState extends State<RegisterUserFoodPage> {
                               ),
                             ),
                           ),
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => Navigator.pushReplacementNamed(
+                            context,
+                            Routes.home,
+                          ),
                           child: const Text(
                             'Cancelar',
                             style: TextStyle(
