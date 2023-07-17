@@ -34,10 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _fetchProfileData().then((value) {
-      print('Profile data fetched');
-      print(_profileData);
-    });
+    _fetchProfileData();
   }
 
   @override
