@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../constants/app_routes.dart';
 import '../main.dart';
 import '../widgets/custom_appbar.dart';
 
@@ -27,14 +26,23 @@ class _ImcReportPageState extends State<ImcReportPage> {
 
   Future<List<dynamic>> GetData() async {
     final response = await supabase
-        .from('user_imc')
-        .select('createdAt,imc')
-        .eq('userId', supabase.auth.currentUser!.id);
-    final formattedDateResponse = response.map((item){
+        .from(
+          'user_imc',
+        )
+        .select(
+          'createdAt,imc',
+        )
+        .eq(
+          'userId',
+          supabase.auth.currentUser!.id,
+        );
+
+    final formattedDateResponse = response.map((item) {
       final createdAt = formatDate(item['createdAt']);
-      return{
-        'createdAt':createdAt,
-        'imc':item['imc'],
+
+      return {
+        'createdAt': createdAt,
+        'imc': item['imc'],
       };
     }).toList();
 
@@ -44,22 +52,15 @@ class _ImcReportPageState extends State<ImcReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacementNamed(Routes.home);
-        },
-        backgroundColor: Colors.purple[800],
-        child: const Icon(Icons.arrow_back),
-      ),
-      appBar: const CustomAppBar(titleText: 'Reporte IMC'),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          setState(() {
-          });
-        },
-        child: Center(
-          child: Container(
+        appBar: const CustomAppBar(
+          title: 'IMC Reports',
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
+          },
+          child: Center(
+              child: SizedBox(
             child: FutureBuilder<List>(
               future: GetData(),
               builder: (context, snapshot) {
@@ -72,7 +73,8 @@ class _ImcReportPageState extends State<ImcReportPage> {
                           Icons.monitor_weight,
                           color: Colors.purple[900],
                         ),
-                        title: Text('IMC:${snapshot.data![index]['imc']}',
+                        title: Text(
+                          'IMC:${snapshot.data![index]['imc']}',
                           style: const TextStyle(
                             color: Colors.black,
                             fontFamily: 'Roboto',
@@ -80,7 +82,8 @@ class _ImcReportPageState extends State<ImcReportPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        subtitle: Text('Ingresado el: ${snapshot.data![index]['createdAt']}',
+                        subtitle: Text(
+                          'Ingresado el: ${snapshot.data![index]['createdAt']}',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontFamily: 'Roboto',
@@ -97,9 +100,7 @@ class _ImcReportPageState extends State<ImcReportPage> {
                 return const CircularProgressIndicator();
               },
             ),
-          )
-        ),
-      )
-    );
+          )),
+        ));
   }
 }

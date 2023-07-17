@@ -19,6 +19,7 @@ class RegisterPageState extends State<RegisterPage> {
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -105,7 +106,7 @@ class RegisterPageState extends State<RegisterPage> {
       appBar: null,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: const EdgeInsets.all(24),
           child: SafeArea(
             child: Column(
               children: [
@@ -128,27 +129,13 @@ class RegisterPageState extends State<RegisterPage> {
           InputField(
             label: 'Nombre *',
             controller: _nameController,
-            validator: () {
-              final RegExp onlyLettersRegexp =
-                  RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$');
-
-              if (!onlyLettersRegexp.hasMatch(_nameController.text)) {
-                return 'El nombre solo puede contener letras';
-              }
-            },
+            shouldHas: InputTypes.onlyLetters,
           ),
           const SizedBox(height: 18),
           InputField(
             label: 'Apellido *',
             controller: _lastNameController,
-            validator: () {
-              final RegExp onlyLettersRegexp =
-                  RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$');
-
-              if (!onlyLettersRegexp.hasMatch(_lastNameController.text)) {
-                return 'El apellido solo puede contener letras';
-              }
-            },
+            shouldHas: InputTypes.onlyLetters,
           ),
           const SizedBox(height: 18),
           InputField(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum InputTypes { onlyLetters, onlyNumbers, mixed }
+
 class InputField extends StatefulWidget {
   final String label;
   final TextInputType type;
@@ -8,6 +10,9 @@ class InputField extends StatefulWidget {
   final Function()? onTap;
   final bool readOnly;
   final Function()? validator;
+  final InputTypes shouldHas;
+  final String hintText;
+  final bool disabled;
 
   const InputField({
     super.key,
@@ -18,6 +23,9 @@ class InputField extends StatefulWidget {
     this.onTap,
     this.readOnly = false,
     this.validator,
+    this.shouldHas = InputTypes.mixed,
+    this.hintText = '',
+    this.disabled = false,
   });
 
   @override
@@ -26,6 +34,7 @@ class InputField extends StatefulWidget {
 
 class _InputFieldState extends State<InputField> {
   bool _passwordVisible = false;
+  final RegExp onlyLettersRegexp = RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$');
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,12 @@ class _InputFieldState extends State<InputField> {
       obscureText:
           widget.label.contains('Contraseña') ? !_passwordVisible : false,
       decoration: InputDecoration(
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          borderSide: BorderSide(color: Colors.grey),
+        ),
         labelText: widget.label,
+        hintText: widget.hintText,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
@@ -64,9 +78,22 @@ class _InputFieldState extends State<InputField> {
         FocusScope.of(context).unfocus();
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      enabled: !widget.disabled,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Ingrese su ${widget.label.toLowerCase().replaceFirst('*', '')}';
+        }
+
+        if (widget.shouldHas == InputTypes.onlyLetters) {
+          if (!onlyLettersRegexp.hasMatch(value)) {
+            return 'Ingrese solo letras en el campo ${widget.label.toLowerCase().replaceFirst('*', '')}';
+          }
+        }
+
+        if (widget.shouldHas == InputTypes.onlyNumbers) {
+          if (double.tryParse(value) == null) {
+            return 'Ingrese solo números en el campo ${widget.label.toLowerCase().replaceFirst('*', '')}';
+          }
         }
 
         if (widget.validator != null) {
