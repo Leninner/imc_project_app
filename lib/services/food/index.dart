@@ -110,10 +110,6 @@ class FoodService {
             userId,
           );
 
-      if (response.length == 0) {
-        return Left(Exception('No hay alimentos registrados'));
-      }
-
       final List<Map<String, String>> userFoods = response
           .map<Map<String, String>>(
             (e) => FoodUserModel(

@@ -51,8 +51,6 @@ Future<List<dynamic>> getImcData() async {
 class _StackOverWidgetState extends State<StackOverWidget>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  final List<Map<String, String>> userImcList = [];
-  final List<Map<String, String>> userFoodList = [];
 
   @override
   void initState() {
@@ -168,14 +166,6 @@ class _StackOverWidgetState extends State<StackOverWidget>
         }
 
         if (state is FoodError) {
-          if (context.findAncestorWidgetOfExactType<SnackBar>() != null) {
-            setState(() {
-              userFoodList.clear();
-            });
-
-            return const SizedBox.shrink();
-          }
-
           return const SnackBar(
             content: Text('Un error ha ocurrido al cargar los alimentos'),
           );
