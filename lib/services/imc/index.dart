@@ -5,10 +5,16 @@ import 'package:imc_project_app/services/imc/models/imc_user_model.dart';
 class ImcService {
   Future<Either<Exception, List<Map<String, String>>>> getUserImc() async {
     try {
-      final response = await supabase
-          .from('user_imc')
-          .select()
-          .eq('userId', supabase.auth.currentUser!.id);
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        return Left(Exception('No hay usuario logueado'));
+      }
+
+      final response = await supabase.from('user_imc').select().eq(
+            'userId',
+            userId,
+          );
 
       final actualResponse = response.map<Map<String, String>>((e) {
         return ImcUserModel(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/widgets/stack_over_widget.dart';
 
 class MyData extends DataTableSource {
   final List<Map<String, dynamic>> _data;
@@ -21,7 +22,9 @@ class MyData extends DataTableSource {
       for (var i = 0; i < columns.length; i++)
         DataCell(
           Text(
-            _data[index][columns[i]] ?? '',
+            columns[i] == 'createdAt'
+                ? formatDate(_data[index][columns[i]])
+                : _data[index][columns[i]] ?? '',
             style: const TextStyle(
               decoration: TextDecoration.none,
             ),

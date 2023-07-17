@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/custom_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,7 +26,7 @@ class _ImcPageState extends State<ImcPage> {
     });
   }
 
-  Future<void> _PostImcData(String weight, String height) async {
+  Future<void> _postImcData(String weight, String height) async {
     calculateImc(weight, height);
     await supabase.from('user_imc').insert({
       'userId': supabase.auth.currentUser!.id,
@@ -59,8 +60,9 @@ class _ImcPageState extends State<ImcPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: 'Registro de IMC',
+        toBackRouteName: Routes.home,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -186,7 +188,7 @@ class _ImcPageState extends State<ImcPage> {
                             toInt(_weightController.text)! < 300 ||
                         toInt(_heightController.text)! > 20 &&
                             toInt(_heightController.text)! < 300) {
-                      await _PostImcData(
+                      await _postImcData(
                         _weightController.text,
                         _heightController.text,
                       );
