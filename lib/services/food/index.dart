@@ -5,6 +5,8 @@ import 'package:imc_project_app/services/food/models/food_user_model.dart';
 import 'package:imc_project_app/services/food/models/schedule_model.dart';
 import 'package:imc_project_app/services/food/models/user_food_request_model.dart';
 
+enum CaloriesFoodFilter { day, week, month, year }
+
 class FoodService {
   Future<Either<Exception, List<FoodModel>>> getFoods() async {
     try {
@@ -99,20 +101,10 @@ class FoodService {
       }
 
       final response = await supabase
-          .from(
-            'user_food',
-          )
-          .select(
-            'calories, createdAt, schedule (name), food (name)',
-          )
-          .eq(
-            'userId',
-            userId,
-          )
-          .order(
-            'createdAt',
-            ascending: true,
-          );
+          .from('user_food')
+          .select('calories, createdAt, schedule (name), food (name)')
+          .eq('userId', userId)
+          .order('createdAt', ascending: true);
 
       final List<Map<String, String>> userFoods = response
           .map<Map<String, String>>(
@@ -131,8 +123,28 @@ class FoodService {
     }
   }
 
-  Future<Either<Exception, List<Map<String, String>>>>
-      getCaloriesByMonth() async {
+  Future<Either<Exception, List<Map<String, String>>>> getCaloriesByFilter(
+    CaloriesFoodFilter filter,
+  ) async {
+    final Map<String, Map<String, String>> filters = {
+      CaloriesFoodFilter.day.toString(): {
+        'table': 'calories_by_day',
+        'field': 'day',
+      },
+      CaloriesFoodFilter.week.toString(): {
+        'table': 'calories_by_week',
+        'field': 'week_start',
+      },
+      CaloriesFoodFilter.month.toString(): {
+        'table': 'calories_by_month',
+        'field': 'month',
+      },
+      CaloriesFoodFilter.year.toString(): {
+        'table': 'calories_by_year',
+        'field': 'year',
+      },
+    };
+
     try {
       final userId = supabase.auth.currentUser?.id;
 
@@ -141,27 +153,25 @@ class FoodService {
       }
 
       final response = await supabase
-          .from(
-            'calories_by_month',
+          .from(filters[filter.toString()]!['table']!)
+          .select(
+            '${filters[filter.toString()]!['field']}, calories',
           )
-          .select('month, calories')
-          .eq(
-            'userId',
-            userId,
-          );
+          .eq('userId', userId);
 
-      final List<Map<String, String>> caloriesByMonth = response
+      final List<Map<String, String>> caloriesByFilter = response
           .map<Map<String, String>>(
             (e) => {
-              'month': e['month'].toString(),
+              '${filters[filter.toString()]!['field']}':
+                  e[filters[filter.toString()]!['field']]!.toString(),
               'calories': e['calories'].toString(),
             },
           )
           .toList();
 
-      return Right(caloriesByMonth);
+      return Right(caloriesByFilter);
     } catch (e) {
-      return Left(Exception('Error al obtener las calorias por mes'));
+      return Left(Exception('Error al obtener las calorias por $filter'));
     }
   }
 }

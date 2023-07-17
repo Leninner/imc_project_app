@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/services/food/bloc/food_bloc.dart';
+import 'package:imc_project_app/services/food/index.dart';
+import 'package:imc_project_app/utils/date_utils.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/default_table.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -109,7 +111,14 @@ class UserFoodTab extends StatelessWidget {
         children: [
           SfCartesianChart(
             tooltipBehavior: TooltipBehavior(enable: true),
-            primaryXAxis: CategoryAxis(),
+            primaryXAxis: CategoryAxis(
+              // change these when the user can filter by week or month
+              labelRotation: CaloriesFoodFilter.week == CaloriesFoodFilter.week
+                  ? -45
+                  : CaloriesFoodFilter.month == CaloriesFoodFilter.month
+                      ? 0
+                      : 90,
+            ),
             title: ChartTitle(text: 'Historial de alimentos'),
             legend: const Legend(
               isVisible: true,
@@ -118,7 +127,7 @@ class UserFoodTab extends StatelessWidget {
             series: <LineSeries<UserFoodDataModel, String>>[
               LineSeries<UserFoodDataModel, String>(
                 dataSource: <UserFoodDataModel>[
-                  for (final food in state.caloriesByMonth)
+                  for (final food in state.caloriesByFilter)
                     UserFoodDataModel.fromJson(food)
                 ],
                 xValueMapper: (UserFoodDataModel sales, _) => sales.month,
@@ -151,10 +160,46 @@ class UserFoodDataModel {
     'Dic',
   ];
 
+  static final List<String> days = [
+    'Lun',
+    'Mar',
+    'Mie',
+    'Jue',
+    'Vie',
+    'Sab',
+    'Dom',
+  ];
+
   UserFoodDataModel(this.month, this.calories);
 
   factory UserFoodDataModel.fromJson(Map<String, String> data) {
-    print(data);
+    if (data['month'] != null) {
+      return UserFoodDataModel(
+        months[int.parse(data['month']!) - 1],
+        double.parse(data['calories']!),
+      );
+    }
+
+    if (data['day'] != null) {
+      return UserFoodDataModel(
+        data['day']!,
+        double.parse(data['calories']!),
+      );
+    }
+
+    if (data['week_start'] != null) {
+      return UserFoodDataModel(
+        'Semana ${formatDate(data['week_start']!)}',
+        double.parse(data['calories']!),
+      );
+    }
+
+    if (data['year'] != null) {
+      return UserFoodDataModel(
+        data['year']!,
+        double.parse(data['calories']!),
+      );
+    }
 
     return UserFoodDataModel(
       months[int.parse(data['month']!) - 1],

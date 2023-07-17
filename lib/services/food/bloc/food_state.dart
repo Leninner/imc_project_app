@@ -22,10 +22,10 @@ class FoodLoading extends FoodState {}
 
 class FoodLoaded extends FoodState {
   final List<Map<String, String>> foodList;
-  final List<Map<String, String>> caloriesByMonth;
+  final List<Map<String, String>> caloriesByFilter;
 
-  const FoodLoaded(this.foodList, this.caloriesByMonth);
+  const FoodLoaded(this.foodList, this.caloriesByFilter);
 
   @override
-  List<Object> get props => [foodList, caloriesByMonth];
+  List<Object> get props => [foodList, caloriesByFilter];
 }
