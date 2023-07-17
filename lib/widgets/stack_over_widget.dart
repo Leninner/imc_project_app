@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imc_project_app/services/food/bloc/food_bloc.dart';
 import 'package:imc_project_app/services/imc/bloc/imc_bloc.dart';
 import 'package:imc_project_app/widgets/dashboard/user_food_tab_widget.dart';
+import 'package:imc_project_app/widgets/dashboard/user_imc_tab_widget.dart';
 
 class StackOverWidget extends StatefulWidget {
   const StackOverWidget({Key? key}) : super(key: key);
@@ -62,9 +63,9 @@ class _StackOverWidgetState extends State<StackOverWidget>
         Expanded(
           child: TabBarView(
             controller: tabController,
-            children: const [
-              UserFoodTab(),
-              UserFoodTab(),
+            children: [
+              UserImcTab(mounted: mounted),
+              const UserFoodTab(),
             ],
           ),
         ),

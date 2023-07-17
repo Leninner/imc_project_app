@@ -14,12 +14,22 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
     emit(FoodLoading());
 
     final prevResult = await FoodService().getUserFood();
+    final prevCaloriesByMonth = await FoodService().getCaloriesByMonth();
 
     prevResult.fold(
       (l) {
         emit(FoodError(l));
       },
-      (r) => emit(FoodLoaded(r)),
+      (userFoodList) {
+        prevCaloriesByMonth.fold(
+          (l) {
+            emit(FoodError(l));
+          },
+          (caloriesByMonth) {
+            emit(FoodLoaded(userFoodList, caloriesByMonth));
+          },
+        );
+      },
     );
   }
 }

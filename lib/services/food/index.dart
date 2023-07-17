@@ -108,6 +108,10 @@ class FoodService {
           .eq(
             'userId',
             userId,
+          )
+          .order(
+            'createdAt',
+            ascending: true,
           );
 
       final List<Map<String, String>> userFoods = response
@@ -124,6 +128,40 @@ class FoodService {
       return Right(userFoods);
     } catch (e) {
       return Left(Exception('Error al obtener los alimentos'));
+    }
+  }
+
+  Future<Either<Exception, List<Map<String, String>>>>
+      getCaloriesByMonth() async {
+    try {
+      final userId = supabase.auth.currentUser?.id;
+
+      if (userId == null) {
+        return Left(Exception('No hay usuario logueado'));
+      }
+
+      final response = await supabase
+          .from(
+            'calories_by_month',
+          )
+          .select('month, calories')
+          .eq(
+            'userId',
+            userId,
+          );
+
+      final List<Map<String, String>> caloriesByMonth = response
+          .map<Map<String, String>>(
+            (e) => {
+              'month': e['month'].toString(),
+              'calories': e['calories'].toString(),
+            },
+          )
+          .toList();
+
+      return Right(caloriesByMonth);
+    } catch (e) {
+      return Left(Exception('Error al obtener las calorias por mes'));
     }
   }
 }

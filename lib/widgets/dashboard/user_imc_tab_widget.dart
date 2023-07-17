@@ -60,6 +60,7 @@ class UserImcTab extends StatelessWidget {
                     },
                     label: 'Registrar Índice de Masa Corporal',
                   ),
+                  const SizedBox(height: 20),
                   Container(
                     height: 300,
                     padding: const EdgeInsets.all(16),
