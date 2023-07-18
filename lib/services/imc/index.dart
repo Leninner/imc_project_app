@@ -41,20 +41,12 @@ class ImcService {
       if (userId == null) {
         return Left(Exception('No hay usuario logueado'));
       }
-
-      print(startDate);
-      print('keninsin');
-      print(endDate);
-      print('kimycita');
-
       final response = await supabase
           .from('user_imc')
           .select()
           .eq('userId', userId)
           .gte('createdAt', startDate)
           .lte('createdAt', endDate);
-
-      print(response);
 
       final actualResponse = response.map<Map<String, String>>((e) {
         return ImcUserModel(
@@ -67,8 +59,6 @@ class ImcService {
 
       return Right(actualResponse);
     } catch (e) {
-      print(e);
-
       return Left(Exception('Ups! Algo salió mal.'));
     }
   }

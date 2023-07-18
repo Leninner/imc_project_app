@@ -50,28 +50,6 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: DropdownButton<String>(
-              value: _selectedFilter,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedFilter = newValue!;
-                });
-              },
-              items: <String>[
-                'Diario',
-                'Semanal',
-                'Mensual',
-                'Anual',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
           Expanded(
             child: Center(
               child: Container(
@@ -91,65 +69,63 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
-                      } else if (snapshot.hasData) {
-                        final imcData = snapshot.data!;
-                        imcData.sort((a, b) => DateFormat('dd-MM-yyyy')
-                            .parse(a['createdAt'])
-                            .compareTo(
-                              DateFormat('dd-MM-yyyy').parse(b['createdAt']),
-                            ));
-                       if (_selectedFilter == 'Diario') {
-                         final imcData = snapshot.data!;
-                         imcData.sort((a, b) => DateFormat('dd-MM-yyyy')
-                             .parse(a['createdAt'])
-                             .compareTo(
-                           DateFormat('dd-MM-yyyy').parse(b['createdAt']),
-                         ));
-                         final currentDate = DateTime.now();
-                         final firstDayOfMonth = DateTime(
-                             currentDate.year, currentDate.month, 1);
-                         final lastDayOfMonth = DateTime(currentDate.year,
-                             currentDate.month + 1, 0);
-                         final filteredData = imcData.where((item) {
-                           final createdAt = DateFormat('dd-MM-yyyy')
-                               .parse(item['createdAt']);
-                           return createdAt.isAfter(
-                               firstDayOfMonth.subtract(const Duration(days: 1))) &&
-                               createdAt.isBefore(
-                                   lastDayOfMonth.add(const Duration(days: 1)));
-                         }).toList();
-                         return SfCartesianChart(
-                           primaryXAxis: DateTimeAxis(
-                             dateFormat: DateFormat('dd-MM-yyyy'),
-                             labelRotation: 90,
-                           ),
-                           tooltipBehavior: TooltipBehavior(enable: true),
-                           series: <ChartSeries>[
-                             LineSeries<dynamic, DateTime>(
-                               name: 'IMC',
-                               dataSource: filteredData,
-                               xValueMapper: (data, _) =>
-                                   DateFormat('dd-MM-yyyy')
-                                       .parse(data['createdAt']),
-                               yValueMapper: (data, _) => data['imc'],
-                               color: Colors.purple[900],
-                             ),
-                           ],
-                         );
                       }
-                      else if (_selectedFilter == 'Semanal') {
+
+                      if (snapshot.hasData) {
+                        final imcData = snapshot.data!;
+
+                        imcData.sort(
+                          (a, b) => DateFormat('dd-MM-yyyy')
+                              .parse(a['createdAt'])
+                              .compareTo(
+                                DateFormat('dd-MM-yyyy').parse(
+                                  b['createdAt'],
+                                ),
+                              ),
+                        );
+
+                        if (_selectedFilter == 'Diario') {
+                          final imcData = snapshot.data!;
+                          imcData.sort(
+                            (a, b) => DateFormat('dd-MM-yyyy')
+                                .parse(a['createdAt'])
+                                .compareTo(
+                                  DateFormat('dd-MM-yyyy')
+                                      .parse(b['createdAt']),
+                                ),
+                          );
+
                           final currentDate = DateTime.now();
-                          final weekStart = currentDate.subtract(
-                              Duration(days: currentDate.weekday - 1));
-                          final weekEnd = weekStart.add(const Duration(days: 6));
+
+                          final firstDayOfMonth = DateTime(
+                            currentDate.year,
+                            currentDate.month,
+                            1,
+                          );
+
+                          final lastDayOfMonth = DateTime(
+                            currentDate.year,
+                            currentDate.month + 1,
+                            0,
+                          );
+
                           final filteredData = imcData.where((item) {
-                            final createdAt = DateFormat('dd-MM-yyyy')
-                                .parse(item['createdAt']);
+                            final createdAt = DateFormat('dd-MM-yyyy').parse(
+                              item['createdAt'],
+                            );
+
                             return createdAt.isAfter(
-                                    weekStart.subtract(const Duration(days: 1))) &&
-                                createdAt
-                                    .isBefore(weekEnd.add(const Duration(days: 1)));
+                                  firstDayOfMonth.subtract(
+                                    const Duration(days: 1),
+                                  ),
+                                ) &&
+                                createdAt.isBefore(
+                                  lastDayOfMonth.add(
+                                    const Duration(days: 1),
+                                  ),
+                                );
                           }).toList();
+
                           return SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
                               dateFormat: DateFormat('dd-MM-yyyy'),
@@ -160,27 +136,105 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                               LineSeries<dynamic, DateTime>(
                                 name: 'IMC',
                                 dataSource: filteredData,
-                                xValueMapper: (data, _) =>
-                                    DateFormat('dd-MM-yyyy')
-                                        .parse(data['createdAt']),
+                                xValueMapper: (data, _) => DateFormat(
+                                  'dd-MM-yyyy',
+                                ).parse(
+                                  data['createdAt'],
+                                ),
                                 yValueMapper: (data, _) => data['imc'],
                                 color: Colors.purple[900],
                               ),
                             ],
                           );
-                        }else if (_selectedFilter == 'Mensual') {
+                        }
+
+                        if (_selectedFilter == 'Semanal') {
                           final currentDate = DateTime.now();
-                          final firstDayOfYear = DateTime(currentDate.year, 1, 1);
-                          final lastDayOfYear = DateTime(currentDate.year, 12, 31);
+
+                          final weekStart = currentDate.subtract(
+                            Duration(days: currentDate.weekday - 1),
+                          );
+                          final weekEnd = weekStart.add(
+                            const Duration(days: 6),
+                          );
+
+                          final filteredData = imcData.where((item) {
+                            final createdAt = DateFormat('dd-MM-yyyy').parse(
+                              item['createdAt'],
+                            );
+
+                            return createdAt.isAfter(
+                                  weekStart.subtract(
+                                    const Duration(days: 1),
+                                  ),
+                                ) &&
+                                createdAt.isBefore(
+                                  weekEnd.add(
+                                    const Duration(days: 1),
+                                  ),
+                                );
+                          }).toList();
+
+                          return SfCartesianChart(
+                            primaryXAxis: DateTimeAxis(
+                              dateFormat: DateFormat('dd-MM-yyyy'),
+                              labelRotation: 90,
+                            ),
+                            tooltipBehavior: TooltipBehavior(enable: true),
+                            series: <ChartSeries>[
+                              LineSeries<dynamic, DateTime>(
+                                name: 'IMC',
+                                dataSource: filteredData,
+                                xValueMapper: (data, _) => DateFormat(
+                                  'dd-MM-yyyy',
+                                ).parse(
+                                  data['createdAt'],
+                                ),
+                                yValueMapper: (data, _) => data['imc'],
+                                color: Colors.purple[900],
+                              ),
+                            ],
+                          );
+                        }
+
+                        if (_selectedFilter == 'Mensual') {
+                          final currentDate = DateTime.now();
+
+                          final firstDayOfYear = DateTime(
+                            currentDate.year,
+                            1,
+                            1,
+                          );
+
+                          final lastDayOfYear = DateTime(
+                            currentDate.year,
+                            12,
+                            31,
+                          );
+
                           final monthlyData = <String, List<double>>{};
 
                           for (final data in imcData) {
-                            final createdAt = DateFormat('dd-MM-yyyy').parse(data['createdAt']);
-                            final monthYear = DateFormat('MMMM-yyyy').format(createdAt);
+                            final createdAt = DateFormat('dd-MM-yyyy').parse(
+                              data['createdAt'],
+                            );
+
+                            final monthYear = DateFormat('MMMM-yyyy').format(
+                              createdAt,
+                            );
+
                             final imc = data['imc'].toDouble();
 
-                            if (createdAt.isAfter(firstDayOfYear.subtract(const Duration(days: 1))) &&
-                                createdAt.isBefore(lastDayOfYear.add(const Duration(days: 1)))) {
+                            if (createdAt.isAfter(
+                                  firstDayOfYear.subtract(
+                                    const Duration(days: 1),
+                                  ),
+                                ) &&
+                                createdAt.isBefore(
+                                  lastDayOfYear.add(
+                                    const Duration(days: 1),
+                                  ),
+                                )) {
                               if (monthlyData.containsKey(monthYear)) {
                                 monthlyData[monthYear]!.add(imc);
                               } else {
@@ -190,12 +244,20 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           }
 
                           final filteredData = <dynamic>[];
+
                           for (final entry in monthlyData.entries) {
                             final monthYear = entry.key;
                             final imcList = entry.value;
+
                             final sumImc = imcList.reduce((a, b) => a + b);
                             final averageImc = sumImc / imcList.length;
-                            filteredData.add({'monthYear': monthYear, 'imc': averageImc});
+
+                            filteredData.add(
+                              {
+                                'monthYear': monthYear,
+                                'imc': averageImc,
+                              },
+                            );
                           }
 
                           return SfCartesianChart(
@@ -212,11 +274,15 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                             ],
                           );
                         }
-                        else if (_selectedFilter == 'Anual') {
+
+                        if (_selectedFilter == 'Anual') {
                           final yearData = <String, List<double>>{};
+
                           for (final data in imcData) {
-                            final createdAt = DateFormat('dd-MM-yyyy')
-                                .parse(data['createdAt']);
+                            final createdAt = DateFormat('dd-MM-yyyy').parse(
+                              data['createdAt'],
+                            );
+
                             final year = createdAt.year.toString();
                             final imc = data['imc'].toDouble();
 
@@ -236,8 +302,12 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                             final sumImc = imcList.reduce((a, b) => a + b);
                             final averageImc = sumImc / imcList.length;
 
-                            filteredData
-                                .add({'createdAt': year, 'imc': averageImc});
+                            filteredData.add(
+                              {
+                                'createdAt': year,
+                                'imc': averageImc,
+                              },
+                            );
                           }
 
                           return SfCartesianChart(
@@ -254,16 +324,18 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                               ),
                             ],
                           );
-                        } else {
-                          return const SizedBox.shrink();
                         }
-                      } else if (snapshot.hasError) {
+
+                        return const SizedBox.shrink();
+                      }
+
+                      if (snapshot.hasError) {
                         return const Center(
                           child: Text('Error'),
                         );
-                      } else {
-                        return const SizedBox.shrink();
                       }
+
+                      return const SizedBox.shrink();
                     },
                   ),
                 ),

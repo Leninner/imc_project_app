@@ -8,12 +8,14 @@ class DateFilterWidget extends StatefulWidget {
   final Function(PickerDateRange data, CaloriesFoodFilter filter)? onSubmit;
   final Function()? onCancel;
   final Map<String, dynamic>? filters;
+  final bool shouldShowPeriodFilter;
 
   const DateFilterWidget({
     super.key,
     this.onSubmit,
     this.onCancel,
     this.filters,
+    this.shouldShowPeriodFilter = false,
   });
 
   @override
@@ -72,43 +74,44 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
         const SizedBox(
           height: 20,
         ),
-        DropdownButtonFormField(
-          decoration: const InputDecoration(
-            labelText: 'Filtro',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
+        if (widget.shouldShowPeriodFilter)
+          DropdownButtonFormField(
+            decoration: const InputDecoration(
+              labelText: 'Filtro',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(8),
+                ),
               ),
             ),
-          ),
-          value: widget.filters!['filter'],
-          items: CaloriesFoodFilter.values
-              .map(
-                (e) => DropdownMenuItem(
-                  value: CaloriesFoodFilter.values[e.index],
-                  child: Text(
-                    _resolveFilter(CaloriesFoodFilter.values[e.index]),
-                    style: const TextStyle(
-                      fontSize: 16,
+            value: widget.filters!['filter'],
+            items: CaloriesFoodFilter.values
+                .map(
+                  (e) => DropdownMenuItem(
+                    value: CaloriesFoodFilter.values[e.index],
+                    child: Text(
+                      _resolveFilter(CaloriesFoodFilter.values[e.index]),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-              )
-              .toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedFilter = value as CaloriesFoodFilter;
-            });
-          },
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) {
-            if (value == null) {
-              return 'Selecciona una opción';
-            }
+                )
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedFilter = value as CaloriesFoodFilter;
+              });
+            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) {
+              if (value == null) {
+                return 'Selecciona una opción';
+              }
 
-            return null;
-          },
-        )
+              return null;
+            },
+          )
       ],
     );
   }

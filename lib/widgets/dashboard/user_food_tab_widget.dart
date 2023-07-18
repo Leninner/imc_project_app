@@ -153,6 +153,7 @@ class _UserFoodTabState extends State<UserFoodTab> {
   DateFilterWidget _buildDatePicker(filters) {
     return DateFilterWidget(
       filters: filters,
+      shouldShowPeriodFilter: true,
       onSubmit: (selectedDateRange, filter) {
         BlocProvider.of<FoodBloc>(context).add(
           GetFoodEvent(

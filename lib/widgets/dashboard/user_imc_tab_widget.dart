@@ -69,7 +69,7 @@ class _UserImcTabState extends State<UserImcTab> {
                     label: 'Registrar Índice de Masa Corporal',
                   ),
                   const SizedBox(height: 20),
-                  _buildDatePicker(),
+                  _buildDatePicker(state.filters),
                   const SizedBox(height: 20),
                   Container(
                     height: 300,
@@ -227,14 +227,15 @@ class _UserImcTabState extends State<UserImcTab> {
     );
   }
 
-  DateFilterWidget _buildDatePicker() {
+  DateFilterWidget _buildDatePicker(filters) {
     return DateFilterWidget(
-      filters: (BlocProvider.of<ImcBloc>(context).state as ImcLoaded).filters,
+      filters: filters,
       onSubmit: (selectedDateRange, filter) {
         BlocProvider.of<ImcBloc>(context).add(
-          GetImcChartDataByDateFilterEvent(
+          GetImcEvent(
             startDate: selectedDateRange.startDate!,
             endDate: selectedDateRange.endDate!,
+            filter: filter,
           ),
         );
       },
