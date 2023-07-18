@@ -26,6 +26,16 @@ class FoodLoaded extends FoodState {
 
   const FoodLoaded(this.foodList, this.caloriesByFilter);
 
+  FoodLoaded copyWith({
+    List<Map<String, String>>? foodList,
+    List<Map<String, String>>? caloriesByFilter,
+  }) {
+    return FoodLoaded(
+      foodList ?? this.foodList,
+      caloriesByFilter ?? this.caloriesByFilter,
+    );
+  }
+
   @override
   List<Object> get props => [foodList, caloriesByFilter];
 }

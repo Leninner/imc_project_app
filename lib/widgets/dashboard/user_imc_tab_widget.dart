@@ -5,10 +5,10 @@ import 'package:imc_project_app/main.dart';
 import 'package:imc_project_app/services/imc/bloc/imc_bloc.dart';
 import 'package:imc_project_app/utils/date_utils.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
+import 'package:imc_project_app/widgets/date_filter_widget.dart';
 import 'package:imc_project_app/widgets/default_table.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class UserImcTab extends StatefulWidget {
   const UserImcTab({
@@ -20,9 +20,6 @@ class UserImcTab extends StatefulWidget {
 }
 
 class _UserImcTabState extends State<UserImcTab> {
-  final _datePickerController = DateRangePickerController();
-  bool _showDateFilter = false;
-
   Future<List<dynamic>> getImcData() async {
     final userId = supabase.auth.currentUser?.id;
 
@@ -50,13 +47,6 @@ class _UserImcTabState extends State<UserImcTab> {
   @override
   void initState() {
     super.initState();
-
-    _datePickerController.selectedRange = PickerDateRange(
-      DateTime.now().subtract(
-        const Duration(days: 15),
-      ),
-      DateTime.now(),
-    );
   }
 
   @override
@@ -79,22 +69,7 @@ class _UserImcTabState extends State<UserImcTab> {
                     label: 'Registrar Índice de Masa Corporal',
                   ),
                   const SizedBox(height: 20),
-                  if (!_showDateFilter)
-                    Row(
-                      children: [
-                        ButtonWidget(
-                          onPressed: () {
-                            setState(() {
-                              _showDateFilter = true;
-                            });
-                          },
-                          width: 200,
-                          label: 'Filtro',
-                          icon: Icons.filter_alt_outlined,
-                        )
-                      ],
-                    ),
-                  if (_showDateFilter) _buildDatePicker(),
+                  _buildDatePicker(),
                   const SizedBox(height: 20),
                   Container(
                     height: 300,
@@ -252,52 +227,16 @@ class _UserImcTabState extends State<UserImcTab> {
     );
   }
 
-  SfDateRangePicker _buildDatePicker() {
-    return SfDateRangePicker(
-      maxDate: DateTime.now(),
-      initialSelectedRange: _datePickerController.selectedRange,
-      selectionMode: DateRangePickerSelectionMode.range,
-      monthFormat: 'MMM',
-      cancelText: 'Cancelar',
-      confirmText: 'Confirmar',
-      showActionButtons: true,
+  DateFilterWidget _buildDatePicker() {
+    return DateFilterWidget(
       onSubmit: (selectedDateRange) {
-        if (selectedDateRange == null) {
-          setState(() {
-            _datePickerController.selectedRange = PickerDateRange(
-              DateTime.now().subtract(
-                const Duration(days: 15),
-              ),
-              DateTime.now(),
-            );
-          });
-
-          return;
-        }
-
         BlocProvider.of<ImcBloc>(context).add(
           GetImcChartDataByDateFilterEvent(
-            startDate: (selectedDateRange as PickerDateRange).startDate!,
+            startDate: selectedDateRange.startDate!,
             endDate: selectedDateRange.endDate!,
           ),
         );
-
-        setState(() {
-          _datePickerController.selectedRange = selectedDateRange;
-        });
       },
-      onCancel: () => setState(
-        () {
-          _datePickerController.selectedRange = PickerDateRange(
-            DateTime.now().subtract(
-              const Duration(days: 15),
-            ),
-            DateTime.now(),
-          );
-
-          _showDateFilter = false;
-        },
-      ),
     );
   }
 }

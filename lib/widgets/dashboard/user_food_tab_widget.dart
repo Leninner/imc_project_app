@@ -5,14 +5,20 @@ import 'package:imc_project_app/services/food/bloc/food_bloc.dart';
 import 'package:imc_project_app/services/food/index.dart';
 import 'package:imc_project_app/utils/date_utils.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
+import 'package:imc_project_app/widgets/date_filter_widget.dart';
 import 'package:imc_project_app/widgets/default_table.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class UserFoodTab extends StatelessWidget {
+class UserFoodTab extends StatefulWidget {
   const UserFoodTab({
     super.key,
   });
 
+  @override
+  State<UserFoodTab> createState() => _UserFoodTabState();
+}
+
+class _UserFoodTabState extends State<UserFoodTab> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FoodBloc, FoodState>(
@@ -34,6 +40,10 @@ class UserFoodTab extends StatelessWidget {
                     },
                     label: 'Registrar Alimento',
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  _buildDatePicker(),
                   const SizedBox(
                     height: 20,
                   ),
@@ -139,6 +149,19 @@ class UserFoodTab extends StatelessWidget {
       ),
     );
   }
+
+  DateFilterWidget _buildDatePicker() {
+    return DateFilterWidget(
+      onSubmit: (selectedDateRange) {
+        BlocProvider.of<FoodBloc>(context).add(
+          GetFoodChartDataByDateFilterEvent(
+            startDate: selectedDateRange.startDate!,
+            endDate: selectedDateRange.endDate!,
+          ),
+        );
+      },
+    );
+  }
 }
 
 class UserFoodDataModel {
@@ -160,19 +183,11 @@ class UserFoodDataModel {
     'Dic',
   ];
 
-  static final List<String> days = [
-    'Lun',
-    'Mar',
-    'Mie',
-    'Jue',
-    'Vie',
-    'Sab',
-    'Dom',
-  ];
-
   UserFoodDataModel(this.month, this.calories);
 
   factory UserFoodDataModel.fromJson(Map<String, String> data) {
+    print(data);
+
     if (data['month'] != null) {
       return UserFoodDataModel(
         months[int.parse(data['month']!) - 1],
