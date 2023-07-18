@@ -14,7 +14,10 @@ class ImcBloc extends Bloc<ImcEvent, ImcState> {
   void _handleGetImcEvent(GetImcEvent event, Emitter<ImcState> emit) async {
     emit(ImcLoading());
 
-    final prevImc = await ImcService().getUserImc();
+    final prevImc = await ImcService().getUserImc(
+      endDate: event.endDate,
+      startDate: event.startDate,
+    );
 
     prevImc.fold(
       (l) {
