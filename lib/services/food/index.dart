@@ -4,7 +4,6 @@ import 'package:imc_project_app/services/food/models/food_model.dart';
 import 'package:imc_project_app/services/food/models/food_user_model.dart';
 import 'package:imc_project_app/services/food/models/schedule_model.dart';
 import 'package:imc_project_app/services/food/models/user_food_request_model.dart';
-import 'package:imc_project_app/utils/date_utils.dart';
 
 enum CaloriesFoodFilter { day, week, month, year }
 
@@ -138,18 +137,22 @@ class FoodService {
       CaloriesFoodFilter.day.toString(): {
         'table': 'calories_by_day',
         'field': 'day',
+        'sortField': 'day'
       },
       CaloriesFoodFilter.week.toString(): {
         'table': 'calories_by_week',
         'field': 'week_start',
+        'sortField': 'week_start',
       },
       CaloriesFoodFilter.month.toString(): {
         'table': 'calories_by_month',
         'field': 'month',
+        'sortField': 'month'
       },
       CaloriesFoodFilter.year.toString(): {
         'table': 'calories_by_year',
         'field': 'year',
+        'sortField': 'year'
       },
     };
 
@@ -165,7 +168,23 @@ class FoodService {
           .select(
             '${filters[filter.toString()]!['field']}, calories',
           )
-          .eq('userId', userId);
+          .eq('userId', userId)
+          .gte(
+            filters[filter.toString()]!['sortField']!,
+            _resolveDateValueByType(
+              filter,
+              startDate,
+              endDate,
+            )['gte']!,
+          )
+          .lte(
+            filters[filter.toString()]!['sortField']!,
+            _resolveDateValueByType(
+              filter,
+              startDate,
+              endDate,
+            )['lte']!,
+          );
 
       final List<Map<String, String>> caloriesByFilter = response
           .map<Map<String, String>>(
@@ -183,32 +202,32 @@ class FoodService {
     }
   }
 
-  Future<Either<Exception, List<Map<String, String>>>> getCaloriesByDateFilter({
-    required DateTime startDate,
-    required DateTime endDate,
-  }) async {
-    try {
-      final result = await supabase
-          .from('user_food')
-          .select('calories, food (name), createdAt')
-          .eq('userId', supabase.auth.currentUser!.id)
-          .gte('createdAt', startDate)
-          .lte('createdAt', endDate.add(const Duration(days: 1)))
-          .order('createdAt', ascending: true)
-          .limit(15);
-
-      final actualResult = result
-          .map<Map<String, String>>(
-            (e) => {
-              'calories': e['calories'].toString(),
-              'day': formatDate(e['createdAt'].toString()),
-            },
-          )
-          .toList();
-
-      return Right(actualResult);
-    } catch (e) {
-      return Left(Exception('Error al eliminar el alimento'));
+  Map<String, dynamic> _resolveDateValueByType(
+    CaloriesFoodFilter filter,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    switch (filter) {
+      case CaloriesFoodFilter.day:
+        return {
+          'gte': startDate,
+          'lte': endDate.add(const Duration(days: 2)),
+        };
+      case CaloriesFoodFilter.week:
+        return {
+          'gte': startDate,
+          'lte': endDate.add(const Duration(days: 2)),
+        };
+      case CaloriesFoodFilter.month:
+        return {
+          'gte': startDate.month,
+          'lte': endDate.month,
+        };
+      case CaloriesFoodFilter.year:
+        return {
+          'gte': startDate.year,
+          'lte': endDate.year,
+        };
     }
   }
 }
