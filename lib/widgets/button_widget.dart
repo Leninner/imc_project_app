@@ -4,12 +4,14 @@ class ButtonWidget extends StatelessWidget {
   final Function() onPressed;
   final String label;
   final double width;
+  final IconData? icon;
 
   const ButtonWidget({
     super.key,
     required this.onPressed,
     required this.label,
     this.width = double.infinity,
+    this.icon,
   });
 
   @override
@@ -17,7 +19,7 @@ class ButtonWidget extends StatelessWidget {
     return SizedBox(
       width: width,
       height: 50,
-      child: ElevatedButton(
+      child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromRGBO(44, 43, 71, 1),
           shape: RoundedRectangleBorder(
@@ -29,7 +31,8 @@ class ButtonWidget extends StatelessWidget {
           ),
         ),
         onPressed: onPressed,
-        child: Text(label),
+        label: Text(label),
+        icon: Icon(icon),
       ),
     );
   }
