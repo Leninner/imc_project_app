@@ -23,16 +23,19 @@ class FoodLoading extends FoodState {}
 class FoodLoaded extends FoodState {
   final List<Map<String, String>> foodList;
   final List<Map<String, String>> caloriesByFilter;
+  final Map<String, dynamic> filters;
 
-  const FoodLoaded(this.foodList, this.caloriesByFilter);
+  const FoodLoaded(this.foodList, this.caloriesByFilter, this.filters);
 
   FoodLoaded copyWith({
     List<Map<String, String>>? foodList,
     List<Map<String, String>>? caloriesByFilter,
+    Map<String, dynamic>? filters,
   }) {
     return FoodLoaded(
       foodList ?? this.foodList,
       caloriesByFilter ?? this.caloriesByFilter,
+      filters ?? this.filters,
     );
   }
 

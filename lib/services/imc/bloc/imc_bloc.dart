@@ -22,7 +22,12 @@ class ImcBloc extends Bloc<ImcEvent, ImcState> {
         emit(ImcError(l));
       },
       (r) {
-        emit(ImcLoaded(r));
+        emit(
+          ImcLoaded(
+            r,
+            const {'startDate': '', 'endDate': '', 'filter': ''},
+          ),
+        );
       },
     );
   }
@@ -43,7 +48,16 @@ class ImcBloc extends Bloc<ImcEvent, ImcState> {
         emit(ImcError(l));
       },
       (r) {
-        emit(ImcLoaded(r));
+        emit(
+          ImcLoaded(
+            r,
+            {
+              'startDate': event.startDate,
+              'endDate': event.endDate,
+              'filter': 'date'
+            },
+          ),
+        );
       },
     );
   }

@@ -43,7 +43,7 @@ class _UserFoodTabState extends State<UserFoodTab> {
                   const SizedBox(
                     height: 20,
                   ),
-                  _buildDatePicker(),
+                  _buildDatePicker(state.filters),
                   const SizedBox(
                     height: 20,
                   ),
@@ -150,8 +150,9 @@ class _UserFoodTabState extends State<UserFoodTab> {
     );
   }
 
-  DateFilterWidget _buildDatePicker() {
+  DateFilterWidget _buildDatePicker(filters) {
     return DateFilterWidget(
+      filters: filters,
       onSubmit: (selectedDateRange, filter) {
         BlocProvider.of<FoodBloc>(context).add(
           GetFoodEvent(

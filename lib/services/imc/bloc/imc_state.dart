@@ -22,8 +22,9 @@ class ImcError extends ImcState {
 
 class ImcLoaded extends ImcState {
   final List<Map<String, String>> imc;
+  final Map<String, dynamic> filters;
 
-  const ImcLoaded(this.imc);
+  const ImcLoaded(this.imc, this.filters);
 
   @override
   List<Object> get props => [imc];

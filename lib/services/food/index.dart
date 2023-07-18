@@ -109,7 +109,7 @@ class FoodService {
           .select('calories, createdAt, schedule (name), food (name)')
           .eq('userId', userId)
           .gte('createdAt', startDate)
-          .lte('createdAt', endDate.add(const Duration(days: 1)))
+          .lte('createdAt', endDate.add(const Duration(days: 2)))
           .order('createdAt', ascending: true);
 
       final List<Map<String, String>> userFoods = response

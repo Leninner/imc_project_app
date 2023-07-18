@@ -7,11 +7,13 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 class DateFilterWidget extends StatefulWidget {
   final Function(PickerDateRange data, CaloriesFoodFilter filter)? onSubmit;
   final Function()? onCancel;
+  final Map<String, dynamic>? filters;
 
   const DateFilterWidget({
     super.key,
     this.onSubmit,
     this.onCancel,
+    this.filters,
   });
 
   @override
@@ -38,7 +40,11 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
         Row(
           children: [
             Text(
-              'Desde ${formatDate(_datePickerController.selectedRange!.startDate.toString())} hasta ${formatDate(_datePickerController.selectedRange!.endDate.toString())}',
+              'Desde ${formatDate(
+                widget.filters!['startDate'].toString(),
+              )} hasta ${formatDate(
+                widget.filters!['endDate'].toString(),
+              )}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -75,7 +81,7 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
               ),
             ),
           ),
-          value: _selectedFilter,
+          value: widget.filters!['filter'],
           items: CaloriesFoodFilter.values
               .map(
                 (e) => DropdownMenuItem(

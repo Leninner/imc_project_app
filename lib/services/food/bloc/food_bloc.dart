@@ -33,7 +33,17 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
             emit(FoodError(l));
           },
           (caloriesByFilter) {
-            emit(FoodLoaded(userFoodList, caloriesByFilter));
+            emit(
+              FoodLoaded(
+                userFoodList,
+                caloriesByFilter,
+                {
+                  'startDate': event.startDate,
+                  'endDate': event.endDate,
+                  'filter': event.filter,
+                },
+              ),
+            );
           },
         );
       },
