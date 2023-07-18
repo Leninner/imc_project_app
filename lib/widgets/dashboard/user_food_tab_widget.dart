@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/services/food/bloc/food_bloc.dart';
 import 'package:imc_project_app/services/food/index.dart';
-import 'package:imc_project_app/utils/date_utils.dart';
+import 'package:imc_project_app/services/food/models/user_food_data_model.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:imc_project_app/widgets/date_filter_widget.dart';
 import 'package:imc_project_app/widgets/default_table.dart';
@@ -160,65 +160,6 @@ class _UserFoodTabState extends State<UserFoodTab> {
           ),
         );
       },
-    );
-  }
-}
-
-class UserFoodDataModel {
-  final String month;
-  final double calories;
-
-  static final List<String> months = [
-    'Ene',
-    'Feb',
-    'Mar',
-    'Abr',
-    'May',
-    'Jun',
-    'Jul',
-    'Ago',
-    'Set',
-    'Oct',
-    'Nov',
-    'Dic',
-  ];
-
-  UserFoodDataModel(this.month, this.calories);
-
-  factory UserFoodDataModel.fromJson(Map<String, String> data) {
-    print(data);
-
-    if (data['month'] != null) {
-      return UserFoodDataModel(
-        months[int.parse(data['month']!) - 1],
-        double.parse(data['calories']!),
-      );
-    }
-
-    if (data['day'] != null) {
-      return UserFoodDataModel(
-        data['day']!,
-        double.parse(data['calories']!),
-      );
-    }
-
-    if (data['week_start'] != null) {
-      return UserFoodDataModel(
-        'Semana ${formatDate(data['week_start']!)}',
-        double.parse(data['calories']!),
-      );
-    }
-
-    if (data['year'] != null) {
-      return UserFoodDataModel(
-        data['year']!,
-        double.parse(data['calories']!),
-      );
-    }
-
-    return UserFoodDataModel(
-      months[int.parse(data['month']!) - 1],
-      double.parse(data['calories']!),
     );
   }
 }
