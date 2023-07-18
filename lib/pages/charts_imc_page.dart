@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/services/food/index.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../main.dart';
 
 class ImcChartReportPage extends StatefulWidget {
-  const ImcChartReportPage({Key? key}) : super(key: key);
+  final CaloriesFoodFilter filter;
+
+  const ImcChartReportPage({
+    super.key,
+    this.filter = CaloriesFoodFilter.day,
+  });
 
   @override
   State<ImcChartReportPage> createState() => _ImcChartReportPageState();
 }
 
 class _ImcChartReportPageState extends State<ImcChartReportPage> {
-  String _selectedFilter = 'Semanal';
-
   @override
   void initState() {
     super.initState();
-    GetData();
+    getData();
   }
 
   String formatDate(String dateString) {
@@ -26,11 +30,12 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
     return formatter.format(dateTime);
   }
 
-  Future<List<dynamic>> GetData() async {
+  Future<List<dynamic>> getData() async {
     final response = await supabase
         .from('user_imc')
         .select('createdAt,imc')
         .eq('userId', supabase.auth.currentUser!.id);
+
     final formattedDateResponse = response.map((item) {
       final createdAt = formatDate(item['createdAt']);
       return {
@@ -63,7 +68,7 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
                   child: FutureBuilder<List<dynamic>>(
-                    future: GetData(),
+                    future: getData(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -84,14 +89,15 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                               ),
                         );
 
-                        if (_selectedFilter == 'Diario') {
+                        if (widget.filter == CaloriesFoodFilter.day) {
                           final imcData = snapshot.data!;
                           imcData.sort(
                             (a, b) => DateFormat('dd-MM-yyyy')
                                 .parse(a['createdAt'])
                                 .compareTo(
-                                  DateFormat('dd-MM-yyyy')
-                                      .parse(b['createdAt']),
+                                  DateFormat('dd-MM-yyyy').parse(
+                                    b['createdAt'],
+                                  ),
                                 ),
                           );
 
@@ -148,7 +154,7 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           );
                         }
 
-                        if (_selectedFilter == 'Semanal') {
+                        if (widget.filter == CaloriesFoodFilter.week) {
                           final currentDate = DateTime.now();
 
                           final weekStart = currentDate.subtract(
@@ -197,7 +203,7 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           );
                         }
 
-                        if (_selectedFilter == 'Mensual') {
+                        if (widget.filter == CaloriesFoodFilter.month) {
                           final currentDate = DateTime.now();
 
                           final firstDayOfYear = DateTime(
@@ -275,7 +281,7 @@ class _ImcChartReportPageState extends State<ImcChartReportPage> {
                           );
                         }
 
-                        if (_selectedFilter == 'Anual') {
+                        if (widget.filter == CaloriesFoodFilter.year) {
                           final yearData = <String, List<double>>{};
 
                           for (final data in imcData) {

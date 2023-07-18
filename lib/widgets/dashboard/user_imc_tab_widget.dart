@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imc_project_app/constants/app_routes.dart';
 import 'package:imc_project_app/main.dart';
+import 'package:imc_project_app/services/food/index.dart';
 import 'package:imc_project_app/services/imc/bloc/imc_bloc.dart';
 import 'package:imc_project_app/utils/date_utils.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
@@ -80,88 +81,8 @@ class _UserImcTabState extends State<UserImcTab> {
                     ),
                     child: Column(
                       children: [
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: FutureBuilder<List<dynamic>>(
-                            future: getImcData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                final imcData = snapshot.data!;
-
-                                imcData.sort(
-                                  (a, b) => DateFormat('dd-MM-yyyy')
-                                      .parse(a['createdAt'])
-                                      .compareTo(
-                                        DateFormat('dd-MM-yyyy')
-                                            .parse(b['createdAt']),
-                                      ),
-                                );
-
-                                final currentDate = DateTime.now();
-                                final firstDayOfMonth = DateTime(
-                                  currentDate.year,
-                                  currentDate.month,
-                                  1,
-                                );
-
-                                final lastDayOfMonth = DateTime(
-                                  currentDate.year,
-                                  currentDate.month + 1,
-                                  0,
-                                );
-
-                                final filteredData = imcData.where(
-                                  (item) {
-                                    final createdAt =
-                                        DateFormat('dd-MM-yyyy').parse(
-                                      item['createdAt'],
-                                    );
-
-                                    return createdAt.isAfter(
-                                          firstDayOfMonth.subtract(
-                                            const Duration(
-                                              days: 1,
-                                            ),
-                                          ),
-                                        ) &&
-                                        createdAt.isBefore(
-                                          lastDayOfMonth.add(
-                                            const Duration(
-                                              days: 1,
-                                            ),
-                                          ),
-                                        );
-                                  },
-                                ).toList();
-
-                                return SfCartesianChart(
-                                  primaryXAxis: DateTimeAxis(
-                                    dateFormat: DateFormat('dd-MM-yyyy'),
-                                    labelRotation: 90,
-                                  ),
-                                  tooltipBehavior: TooltipBehavior(
-                                    enable: true,
-                                  ),
-                                  series: <ChartSeries>[
-                                    LineSeries<dynamic, DateTime>(
-                                      name: 'IMC',
-                                      dataSource: filteredData,
-                                      xValueMapper: (data, _) =>
-                                          DateFormat('dd-MM-yyyy').parse(
-                                        data['createdAt'],
-                                      ),
-                                      yValueMapper: (data, _) => data['imc'],
-                                      color: Colors.purple[900],
-                                    ),
-                                  ],
-                                );
-                              } else if (snapshot.hasError) {
-                                return const Text('Error');
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            },
-                          ),
+                        _buildImcChart(
+                          state.filters['filter'] as CaloriesFoodFilter,
                         ),
                         const SizedBox(height: 10),
                         ButtonWidget(
@@ -227,9 +148,290 @@ class _UserImcTabState extends State<UserImcTab> {
     );
   }
 
+  AspectRatio _buildImcChart(CaloriesFoodFilter filter) {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: FutureBuilder<List<dynamic>>(
+        future: getImcData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasData) {
+            final imcData = snapshot.data!;
+
+            imcData.sort(
+              (a, b) =>
+                  DateFormat('dd-MM-yyyy').parse(a['createdAt']).compareTo(
+                        DateFormat('dd-MM-yyyy').parse(
+                          b['createdAt'],
+                        ),
+                      ),
+            );
+
+            if (filter == CaloriesFoodFilter.day) {
+              final imcData = snapshot.data!;
+              imcData.sort(
+                (a, b) =>
+                    DateFormat('dd-MM-yyyy').parse(a['createdAt']).compareTo(
+                          DateFormat('dd-MM-yyyy').parse(
+                            b['createdAt'],
+                          ),
+                        ),
+              );
+
+              final currentDate = DateTime.now();
+
+              final firstDayOfMonth = DateTime(
+                currentDate.year,
+                currentDate.month,
+                1,
+              );
+
+              final lastDayOfMonth = DateTime(
+                currentDate.year,
+                currentDate.month + 1,
+                0,
+              );
+
+              final filteredData = imcData.where((item) {
+                final createdAt = DateFormat('dd-MM-yyyy').parse(
+                  item['createdAt'],
+                );
+
+                return createdAt.isAfter(
+                      firstDayOfMonth.subtract(
+                        const Duration(days: 1),
+                      ),
+                    ) &&
+                    createdAt.isBefore(
+                      lastDayOfMonth.add(
+                        const Duration(days: 1),
+                      ),
+                    );
+              }).toList();
+
+              return SfCartesianChart(
+                primaryXAxis: DateTimeAxis(
+                  dateFormat: DateFormat('dd-MM-yyyy'),
+                  labelRotation: 90,
+                ),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <ChartSeries>[
+                  LineSeries<dynamic, DateTime>(
+                    name: 'IMC',
+                    dataSource: filteredData,
+                    xValueMapper: (data, _) => DateFormat(
+                      'dd-MM-yyyy',
+                    ).parse(
+                      data['createdAt'],
+                    ),
+                    yValueMapper: (data, _) => data['imc'],
+                    color: Colors.purple[900],
+                  ),
+                ],
+              );
+            }
+
+            if (filter == CaloriesFoodFilter.week) {
+              final currentDate = DateTime.now();
+
+              final weekStart = currentDate.subtract(
+                Duration(days: currentDate.weekday - 1),
+              );
+              final weekEnd = weekStart.add(
+                const Duration(days: 6),
+              );
+
+              final filteredData = imcData.where((item) {
+                final createdAt = DateFormat('dd-MM-yyyy').parse(
+                  item['createdAt'],
+                );
+
+                return createdAt.isAfter(
+                      weekStart.subtract(
+                        const Duration(days: 1),
+                      ),
+                    ) &&
+                    createdAt.isBefore(
+                      weekEnd.add(
+                        const Duration(days: 1),
+                      ),
+                    );
+              }).toList();
+
+              return SfCartesianChart(
+                primaryXAxis: DateTimeAxis(
+                  dateFormat: DateFormat('dd-MM-yyyy'),
+                  labelRotation: 90,
+                ),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <ChartSeries>[
+                  LineSeries<dynamic, DateTime>(
+                    name: 'IMC',
+                    dataSource: filteredData,
+                    xValueMapper: (data, _) => DateFormat(
+                      'dd-MM-yyyy',
+                    ).parse(
+                      data['createdAt'],
+                    ),
+                    yValueMapper: (data, _) => data['imc'],
+                    color: Colors.purple[900],
+                  ),
+                ],
+              );
+            }
+
+            if (filter == CaloriesFoodFilter.month) {
+              final currentDate = DateTime.now();
+
+              final firstDayOfYear = DateTime(
+                currentDate.year,
+                1,
+                1,
+              );
+
+              final lastDayOfYear = DateTime(
+                currentDate.year,
+                12,
+                31,
+              );
+
+              final monthlyData = <String, List<double>>{};
+
+              for (final data in imcData) {
+                final createdAt = DateFormat('dd-MM-yyyy').parse(
+                  data['createdAt'],
+                );
+
+                final monthYear = DateFormat('MMMM-yyyy').format(
+                  createdAt,
+                );
+
+                final imc = data['imc'].toDouble();
+
+                if (createdAt.isAfter(
+                      firstDayOfYear.subtract(
+                        const Duration(days: 1),
+                      ),
+                    ) &&
+                    createdAt.isBefore(
+                      lastDayOfYear.add(
+                        const Duration(days: 1),
+                      ),
+                    )) {
+                  if (monthlyData.containsKey(monthYear)) {
+                    monthlyData[monthYear]!.add(imc);
+                  } else {
+                    monthlyData[monthYear] = [imc];
+                  }
+                }
+              }
+
+              final filteredData = <dynamic>[];
+
+              for (final entry in monthlyData.entries) {
+                final monthYear = entry.key;
+                final imcList = entry.value;
+
+                final sumImc = imcList.reduce((a, b) => a + b);
+                final averageImc = sumImc / imcList.length;
+
+                filteredData.add(
+                  {
+                    'monthYear': monthYear,
+                    'imc': averageImc,
+                  },
+                );
+              }
+
+              return SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <ChartSeries>[
+                  LineSeries<dynamic, String>(
+                    name: 'IMC',
+                    dataSource: filteredData,
+                    xValueMapper: (data, _) => data['monthYear'],
+                    yValueMapper: (data, _) => data['imc'],
+                    color: Colors.purple[900],
+                  ),
+                ],
+              );
+            }
+
+            if (filter == CaloriesFoodFilter.year) {
+              final yearData = <String, List<double>>{};
+
+              for (final data in imcData) {
+                final createdAt = DateFormat('dd-MM-yyyy').parse(
+                  data['createdAt'],
+                );
+
+                final year = createdAt.year.toString();
+                final imc = data['imc'].toDouble();
+
+                if (yearData.containsKey(year)) {
+                  yearData[year]!.add(imc);
+                } else {
+                  yearData[year] = [imc];
+                }
+              }
+
+              final filteredData = <dynamic>[];
+
+              for (final entry in yearData.entries) {
+                final year = entry.key;
+                final imcList = entry.value;
+
+                final sumImc = imcList.reduce((a, b) => a + b);
+                final averageImc = sumImc / imcList.length;
+
+                filteredData.add(
+                  {
+                    'createdAt': year,
+                    'imc': averageImc,
+                  },
+                );
+              }
+
+              return SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <ChartSeries>[
+                  LineSeries<dynamic, String>(
+                    name: 'IMC',
+                    dataSource: filteredData,
+                    xValueMapper: (data, _) => data['createdAt'].toString(),
+                    yValueMapper: (data, _) => data['imc'],
+                    color: Colors.purple[900],
+                  ),
+                ],
+              );
+            }
+
+            return const SizedBox.shrink();
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error'),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
   DateFilterWidget _buildDatePicker(filters) {
     return DateFilterWidget(
       filters: filters,
+      shouldShowPeriodFilter: true,
       onSubmit: (selectedDateRange, filter) {
         BlocProvider.of<ImcBloc>(context).add(
           GetImcEvent(
