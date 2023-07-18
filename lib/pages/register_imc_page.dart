@@ -52,6 +52,8 @@ class _ImcPageState extends State<ImcPage> {
         backgroundColor: Colors.green,
       ),
     );
+
+    Navigator.pushReplacementNamed(context, Routes.home);
   }
 
   final TextEditingController _weightController = TextEditingController();

@@ -92,7 +92,10 @@ class FoodService {
     }
   }
 
-  Future<Either<Exception, List<Map<String, String>>>> getUserFood() async {
+  Future<Either<Exception, List<Map<String, String>>>> getUserFood({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
     try {
       final userId = supabase.auth.currentUser?.id;
 
@@ -104,6 +107,8 @@ class FoodService {
           .from('user_food')
           .select('calories, createdAt, schedule (name), food (name)')
           .eq('userId', userId)
+          .gte('createdAt', startDate)
+          .lte('createdAt', endDate.add(const Duration(days: 2)))
           .order('createdAt', ascending: true);
 
       final List<Map<String, String>> userFoods = response
@@ -123,25 +128,31 @@ class FoodService {
     }
   }
 
-  Future<Either<Exception, List<Map<String, String>>>> getCaloriesByFilter(
-    CaloriesFoodFilter filter,
-  ) async {
+  Future<Either<Exception, List<Map<String, String>>>> getCaloriesByFilter({
+    required CaloriesFoodFilter filter,
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
     final Map<String, Map<String, String>> filters = {
       CaloriesFoodFilter.day.toString(): {
         'table': 'calories_by_day',
         'field': 'day',
+        'sortField': 'day'
       },
       CaloriesFoodFilter.week.toString(): {
         'table': 'calories_by_week',
         'field': 'week_start',
+        'sortField': 'week_start',
       },
       CaloriesFoodFilter.month.toString(): {
         'table': 'calories_by_month',
         'field': 'month',
+        'sortField': 'month'
       },
       CaloriesFoodFilter.year.toString(): {
         'table': 'calories_by_year',
         'field': 'year',
+        'sortField': 'year'
       },
     };
 
@@ -157,7 +168,23 @@ class FoodService {
           .select(
             '${filters[filter.toString()]!['field']}, calories',
           )
-          .eq('userId', userId);
+          .eq('userId', userId)
+          .gte(
+            filters[filter.toString()]!['sortField']!,
+            _resolveDateValueByType(
+              filter,
+              startDate,
+              endDate,
+            )['gte']!,
+          )
+          .lte(
+            filters[filter.toString()]!['sortField']!,
+            _resolveDateValueByType(
+              filter,
+              startDate,
+              endDate,
+            )['lte']!,
+          );
 
       final List<Map<String, String>> caloriesByFilter = response
           .map<Map<String, String>>(
@@ -172,6 +199,35 @@ class FoodService {
       return Right(caloriesByFilter);
     } catch (e) {
       return Left(Exception('Error al obtener las calorias por $filter'));
+    }
+  }
+
+  Map<String, dynamic> _resolveDateValueByType(
+    CaloriesFoodFilter filter,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    switch (filter) {
+      case CaloriesFoodFilter.day:
+        return {
+          'gte': startDate,
+          'lte': endDate.add(const Duration(days: 2)),
+        };
+      case CaloriesFoodFilter.week:
+        return {
+          'gte': startDate,
+          'lte': endDate.add(const Duration(days: 2)),
+        };
+      case CaloriesFoodFilter.month:
+        return {
+          'gte': startDate.month,
+          'lte': endDate.month,
+        };
+      case CaloriesFoodFilter.year:
+        return {
+          'gte': startDate.year,
+          'lte': endDate.year,
+        };
     }
   }
 }

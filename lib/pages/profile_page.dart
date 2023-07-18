@@ -13,6 +13,29 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
+  late Map<String, dynamic> _profileData;
+
+  Future<void> _fetchProfileData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final response = await supabase
+        .from('user')
+        .select('name, email, birthday, gender, lastName')
+        .eq('id', supabase.auth.currentUser!.id);
+
+    setState(() {
+      _isLoading = false;
+      _profileData = response[0] as Map<String, dynamic>;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfileData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
         title: 'Perfil',
+        toBackRouteName: Routes.home,
       ),
       body: buildBody(),
     );
@@ -41,15 +65,6 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/profile.jpg'),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               const Text(
                 'Información',
                 style: TextStyle(
@@ -60,13 +75,22 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(
                 height: 20,
               ),
-              buildFieldInfo("Nombre Completo", "Lenin Mazabanda"),
-              buildFieldInfo("Correo Electrónico", "lenin@tinkin.one"),
+              buildFieldInfo(
+                "Nombre Completo",
+                '${_profileData["name"]} ${_profileData["lastName"]}',
+              ),
+              buildFieldInfo(
+                "Correo Electrónico",
+                _profileData["email"],
+              ),
               buildFieldInfo(
                 "Fecha de Nacimiento",
-                "12 de octubre de 1998",
+                _profileData["birthday"].toString().substring(0, 10),
               ),
-              buildFieldInfo("Género", "Masculino"),
+              buildFieldInfo(
+                "Género",
+                _profileData['gender'],
+              ),
               const SizedBox(
                 height: 20,
               ),

@@ -13,9 +13,14 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
   void _handleGetFoodEvent(GetFoodEvent event, Emitter<FoodState> emit) async {
     emit(FoodLoading());
 
-    final prevResult = await FoodService().getUserFood();
+    final prevResult = await FoodService().getUserFood(
+      endDate: event.endDate,
+      startDate: event.startDate,
+    );
     final prevCaloriesByMonth = await FoodService().getCaloriesByFilter(
-      CaloriesFoodFilter.month,
+      filter: event.filter,
+      endDate: event.endDate,
+      startDate: event.startDate,
     );
 
     prevResult.fold(
@@ -28,7 +33,17 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
             emit(FoodError(l));
           },
           (caloriesByFilter) {
-            emit(FoodLoaded(userFoodList, caloriesByFilter));
+            emit(
+              FoodLoaded(
+                userFoodList,
+                caloriesByFilter,
+                {
+                  'startDate': event.startDate,
+                  'endDate': event.endDate,
+                  'filter': event.filter,
+                },
+              ),
+            );
           },
         );
       },
