@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:imc_project_app/services/food/index.dart';
 import 'package:imc_project_app/utils/date_utils.dart';
 import 'package:imc_project_app/widgets/button_widget.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DateFilterWidget extends StatefulWidget {
-  final Function(PickerDateRange data)? onSubmit;
+  final Function(PickerDateRange data, CaloriesFoodFilter filter)? onSubmit;
   final Function()? onCancel;
 
   const DateFilterWidget({
@@ -20,17 +21,18 @@ class DateFilterWidget extends StatefulWidget {
 class _DateFilterWidgetState extends State<DateFilterWidget> {
   final _datePickerController = DateRangePickerController();
   bool _showDateFilter = false;
+  CaloriesFoodFilter _selectedFilter = CaloriesFoodFilter.day;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (_showDateFilter) _buildDateFilter() else _buildDateFilterButton(),
+        if (_showDateFilter) _buildDateFilter() else _buildDateFilterButtons(),
       ],
     );
   }
 
-  Widget _buildDateFilterButton() {
+  Widget _buildDateFilterButtons() {
     return Column(
       children: [
         Row(
@@ -58,9 +60,49 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
               width: 200,
               label: 'Filtro',
               icon: Icons.filter_alt_outlined,
-            )
+            ),
           ],
         ),
+        const SizedBox(
+          height: 20,
+        ),
+        DropdownButtonFormField(
+          decoration: const InputDecoration(
+            labelText: 'Filtro',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+          ),
+          value: _selectedFilter,
+          items: CaloriesFoodFilter.values
+              .map(
+                (e) => DropdownMenuItem(
+                  value: CaloriesFoodFilter.values[e.index],
+                  child: Text(
+                    _resolveFilter(CaloriesFoodFilter.values[e.index]),
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedFilter = value as CaloriesFoodFilter;
+            });
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) {
+            if (value == null) {
+              return 'Selecciona una opción';
+            }
+
+            return null;
+          },
+        )
       ],
     );
   }
@@ -120,6 +162,7 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
 
         widget.onSubmit!(
           selectedDateRange,
+          _selectedFilter,
         );
 
         setState(() {
@@ -164,5 +207,19 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
     super.initState();
   }
 
-  PickerDateRange? get selectedRange => _datePickerController.selectedRange;
+  String _resolveFilter(CaloriesFoodFilter filter) {
+    switch (filter) {
+      case CaloriesFoodFilter.day:
+        return 'Diario';
+      case CaloriesFoodFilter.month:
+        return 'Mensual';
+      case CaloriesFoodFilter.week:
+        return 'Semanal';
+      default:
+        return 'Anual';
+    }
+  }
+
+  List<Object?> get props =>
+      [_datePickerController.selectedRange, _selectedFilter];
 }

@@ -229,7 +229,7 @@ class _UserImcTabState extends State<UserImcTab> {
 
   DateFilterWidget _buildDatePicker() {
     return DateFilterWidget(
-      onSubmit: (selectedDateRange) {
+      onSubmit: (selectedDateRange, filter) {
         BlocProvider.of<ImcBloc>(context).add(
           GetImcChartDataByDateFilterEvent(
             startDate: selectedDateRange.startDate!,

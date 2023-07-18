@@ -93,7 +93,10 @@ class FoodService {
     }
   }
 
-  Future<Either<Exception, List<Map<String, String>>>> getUserFood() async {
+  Future<Either<Exception, List<Map<String, String>>>> getUserFood({
+    required DateTime startDate,
+    required DateTime endDate,
+  }) async {
     try {
       final userId = supabase.auth.currentUser?.id;
 
@@ -105,6 +108,8 @@ class FoodService {
           .from('user_food')
           .select('calories, createdAt, schedule (name), food (name)')
           .eq('userId', userId)
+          .gte('createdAt', startDate)
+          .lte('createdAt', endDate.add(const Duration(days: 1)))
           .order('createdAt', ascending: true);
 
       final List<Map<String, String>> userFoods = response
