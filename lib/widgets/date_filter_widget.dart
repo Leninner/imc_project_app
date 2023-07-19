@@ -74,6 +74,13 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
         const SizedBox(
           height: 20,
         ),
+      ],
+    );
+  }
+
+  Column _buildDateFilter() {
+    return Column(
+      children: [
         if (widget.shouldShowPeriodFilter)
           DropdownButtonFormField(
             decoration: const InputDecoration(
@@ -111,91 +118,88 @@ class _DateFilterWidgetState extends State<DateFilterWidget> {
 
               return null;
             },
-          )
-      ],
-    );
-  }
+          ),
+        SfDateRangePicker(
+          maxDate: DateTime.now(),
+          initialSelectedRange: _datePickerController.selectedRange,
+          selectionMode: DateRangePickerSelectionMode.range,
+          monthFormat: 'MMM',
+          cancelText: 'Cancelar',
+          confirmText: 'Confirmar',
+          showActionButtons: true,
+          onSubmit: (selectedDateRange) {
+            if (selectedDateRange == null) {
+              setState(() {
+                _datePickerController.selectedRange = PickerDateRange(
+                  DateTime.now().subtract(
+                    const Duration(days: 15),
+                  ),
+                  DateTime.now(),
+                );
+              });
 
-  SfDateRangePicker _buildDateFilter() {
-    return SfDateRangePicker(
-      maxDate: DateTime.now(),
-      initialSelectedRange: _datePickerController.selectedRange,
-      selectionMode: DateRangePickerSelectionMode.range,
-      monthFormat: 'MMM',
-      cancelText: 'Cancelar',
-      confirmText: 'Confirmar',
-      showActionButtons: true,
-      onSubmit: (selectedDateRange) {
-        if (selectedDateRange == null) {
-          setState(() {
-            _datePickerController.selectedRange = PickerDateRange(
-              DateTime.now().subtract(
-                const Duration(days: 15),
-              ),
-              DateTime.now(),
-            );
-          });
+              return;
+            }
 
-          return;
-        }
+            if ((selectedDateRange as PickerDateRange).startDate == null ||
+                selectedDateRange.endDate == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Selecione un período válido',
+                    style: TextStyle(),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
 
-        if ((selectedDateRange as PickerDateRange).startDate == null ||
-            selectedDateRange.endDate == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Selecione un período válido',
-                style: TextStyle(),
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
+              setState(() {
+                _datePickerController.selectedRange = PickerDateRange(
+                  DateTime.now().subtract(
+                    const Duration(days: 15),
+                  ),
+                  DateTime.now(),
+                );
+              });
 
-          setState(() {
-            _datePickerController.selectedRange = PickerDateRange(
-              DateTime.now().subtract(
-                const Duration(days: 15),
-              ),
-              DateTime.now(),
-            );
-          });
+              setState(() {
+                _showDateFilter = false;
+              });
 
-          setState(() {
-            _showDateFilter = false;
-          });
+              return;
+            }
 
-          return;
-        }
+            if (widget.onSubmit == null) return;
 
-        if (widget.onSubmit == null) return;
-
-        widget.onSubmit!(
-          selectedDateRange,
-          _selectedFilter,
-        );
-
-        setState(() {
-          _datePickerController.selectedRange = selectedDateRange;
-        });
-      },
-      onCancel: () {
-        setState(
-          () {
-            _datePickerController.selectedRange = PickerDateRange(
-              DateTime.now().subtract(
-                const Duration(days: 15),
-              ),
-              DateTime.now(),
+            widget.onSubmit!(
+              selectedDateRange,
+              _selectedFilter,
             );
 
-            _showDateFilter = false;
+            setState(() {
+              _datePickerController.selectedRange = selectedDateRange;
+            });
           },
-        );
+          onCancel: () {
+            setState(
+              () {
+                _datePickerController.selectedRange = PickerDateRange(
+                  DateTime.now().subtract(
+                    const Duration(days: 15),
+                  ),
+                  DateTime.now(),
+                );
 
-        if (widget.onCancel == null) return;
+                _showDateFilter = false;
+              },
+            );
 
-        widget.onCancel!();
-      },
+            if (widget.onCancel == null) return;
+
+            widget.onCancel!();
+          },
+        ),
+      ],
     );
   }
 
